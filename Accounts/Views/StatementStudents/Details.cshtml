@@ -1,0 +1,122 @@
+﻿@model Accounts.Models.StatementStudent
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>StatementStudent</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Statement.NameDiscipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Statement.NameDiscipline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.StudentStatement.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.StudentStatement.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeacherStatement.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeacherStatement.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupIdSite)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupIdSite)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupIdDecanate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupIdDecanate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IdStudentDecanate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IdStudentDecanate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PointSemester)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PointSemester)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PointAdvanced)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PointAdvanced)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PointControl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PointControl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TotalPoint)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TotalPoint)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Grade)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Grade)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsBlocked)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsBlocked)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

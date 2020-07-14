@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Accounts.Models.ListDeclarations>
+
+@{
+    ViewBag.Title = "Список группы: ";
+}
+
+    <h2>@ViewBag.Title @ViewBag.CurrentGroup.Name</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Студент
+            </th>            
+            <th>
+                Дата
+            </th>
+            <th>
+                Заявление
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in Model)
+        {
+            
+        <tr>
+            <td>
+                @item.Lastname @item.Firstname @Html.Raw((@item.Middlename != null) ? @item.Middlename : "")
+            </td>            
+            <td>
+                @Html.Raw((item.Date != null) ? Convert.ToDateTime(@item.Date).ToString("dd/MM/yyyy") : "")
+            </td>
+            <td>
+                <a href="@Url.Action("GetFile", new { path = item.Path, name = item.NameFile })" class="not-filled recent">@item.NameFile</a><br />
+            </td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+    

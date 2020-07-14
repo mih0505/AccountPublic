@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Accounts.Models.DiplomWork>
+
+@{
+    ViewBag.Title = "Список государственных итоговых аттестаций";
+}
+
+    <h2>@ViewBag.Title</h2>
+
+
+<table class="table">
+    <tr>        
+        <th>
+            Студент
+        </th>
+        <th>
+            Преподаватель
+        </th>
+        <th>
+            Тема
+        </th>
+        
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>        
+        <td>
+            @item.StudentDiplom.Lastname
+            @item.StudentDiplom.Firstname
+            @if (!String.IsNullOrEmpty(item.StudentDiplom.Middlename))
+            {
+                @item.StudentDiplom.Middlename
+            }
+        </td>
+        <td>
+            @if (item.TeacherDiplom != null)
+            {
+                @Html.Raw(item.TeacherDiplom.Lastname + " " + @item.TeacherDiplom.Firstname + " ");
+                if (!String.IsNullOrEmpty(item.TeacherDiplom.Middlename))
+                {
+                    @item.TeacherDiplom.Middlename
+                }
+            }
+            else
+            {
+                @Html.Raw("---");
+            }
+        </td>
+        <td>
+            @item.Topic           
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>            
+        </td>
+    </tr>
+}
+
+</table>

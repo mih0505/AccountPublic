@@ -1,0 +1,115 @@
+﻿@model Accounts.Models.LessonFull
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Редактировать занятие</h4>
+        <p><span style="color: red;font-weight:bold;">Внимание!</span> <strong>Доп. оценка 2</strong> исключительно для преподавателя и в печатной версии журнала отображаться не будет.</p>
+    </div>
+    <div class="modal-body" id="frmEmp" style="padding-bottom:25px;">
+        @using (Ajax.BeginForm("Edit", "Lessons", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "frmEmp" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model => model.Lesson.JournalId, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.Lesson.Id, new { htmlAttributes = new { @class = "form-control" } })
+            <table class="lesson table">
+                <tr>
+                    <th>
+                        №
+                    </th>
+                    <th class="td_students">
+                        <div class="col-md-10-statement">
+                            ФИО студента
+                        </div>
+                    </th>
+                    <th class="td_grades">
+                        <div class="col-md-10-statement">
+                            Оценка
+                        </div>
+                    </th>
+                    <th class="td_grades">
+                        <div class="col-md-10-statement">
+                            Доп. <br /> оценка 1
+                        </div>
+                    </th>
+                    <th class="td_grades">
+                        <div class="col-md-10-statement">
+                            Доп. <br /> оценка 2
+                        </div>
+                    </th>
+                    <th>
+                        <div class="col-md-10-statement">
+                            Занятие
+                        </div>
+                    </th>
+                </tr>
+                @for (int i = 0; i < Model.Study.Count; i++)
+                {
+                    <tr>
+                        <td><div class="col-md-10-statement top1">@(i + 1)</div></td>
+                        <td class="td_students">
+                            <div class="col-md-10-statement top1">
+                                @Html.HiddenFor(m => m.Study[i].Study.Student.Id)
+                                @Model.Study[i].Study.Student.Lastname
+                                @Model.Study[i].Study.Student.Firstname
+                                @Model.Study[i].Study.Student.Middlename
+                            </div>
+                        </td>
+                        <td class="td_grades">
+                            @Html.DropDownListFor(m => m.Study[i].Study.Grade1, Model.Study[i].Grades1, "--", new { @class = "form-control", @style = "width: 70px;" })
+                        </td>
+                        <td class="td_grades">
+                            @Html.DropDownListFor(m => m.Study[i].Study.Grade2, Model.Study[i].Grades2, "--", new { @class = "form-control", @style = "width: 70px;" })
+                        </td>
+                        <td class="td_grades">
+                            @Html.DropDownListFor(m => m.Study[i].Study.Grade3, Model.Study[i].Grades3, "--", new { @class = "form-control", @style = "width: 70px;" })
+                        </td>
+                        @if (i == 0)
+                        {
+
+                            <td rowspan="@Model.Study.Count()">
+                                <div class="form-group">
+                                    <label for="Topic">Вид занятия:</label>
+                                    @Html.DropDownListFor(model => model.Lesson.TypeLesson, Model.TypeLesson, null, new { @class = "form-control" })
+                                    @*@Html.EditorFor(model => model.Lesson.TypeLesson, new { htmlAttributes = new { @class = "form-control" } })*@
+                                    @Html.ValidationMessageFor(model => model.Lesson.TypeLesson, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Topic">Дата:</label>
+                                    @Html.EditorFor(model => model.Lesson.Date, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Lesson.Date, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Topic">Тема:</label>
+                                    @Html.EditorFor(model => model.Lesson.Topic, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                                    @Html.ValidationMessageFor(model => model.Lesson.Topic, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="HomeWork">Домашняя работа:</label>
+                                    @Html.EditorFor(model => model.Lesson.HomeWork, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                                    @Html.ValidationMessageFor(model => model.Lesson.HomeWork, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Note">Примечание:</label>
+                                    @Html.EditorFor(model => model.Lesson.Note, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                                    @Html.ValidationMessageFor(model => model.Lesson.Note, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        }
+                    </tr>
+                }
+
+            </table>
+            <div class="modal-footer">
+                <input type="submit" class="btn btn-primary" value="Сохранить" />
+            </div>
+        }
+    </div>
+
+</div>

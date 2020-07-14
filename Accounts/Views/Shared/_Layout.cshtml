@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title – Личный кабинет</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    @*<link href="https://vjs.zencdn.net/7.8.2/video-js.css" rel="stylesheet" />*@
+</head>
+<body>
+    <header class="header1" id="header1">
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @Html.ActionLink("Личный кабинет", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li>@Html.ActionLink("Домашняя страница", "Index", "Home")</li>
+                        
+                        @if (User.IsInRole("Students"))
+                        {
+                            <li>@Html.ActionLink("Бланки заявлений, документов", "DocTemplates", "Home")</li>
+                        }
+
+                        @if (User.IsInRole("Administrators") || User.IsInRole("FacultiesManagers"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Деканат <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Список групп", "ListGroups", "Students")</li>
+                                    <li>@Html.ActionLink("Заявление на онлайн", "ListGroups", "Declarations")</li>
+                                    <li>@Html.ActionLink("Ведомости", "Index", "Statements")</li>
+                                    <li>@Html.ActionLink("Курсовые/Практики", "Index", "Courses")</li>
+                                    <li>@Html.ActionLink("Портфолио преподавателей", "TeachersPortfolio", "Tutors")</li>
+                                    <li>@Html.ActionLink("Журналы", "Index", "Journals")</li>
+                                    <li class="divider"></li>
+                                    <li>@Html.ActionLink("Список пустых ведомостей", "StatementsNullable", "Reports")</li>
+                                    <li>@Html.ActionLink("Список пустых работ", "CoursesNullable", "Reports")</li>
+                                    <li>@Html.ActionLink("Процент публикации проектов", "CoursesFillPercent", "Reports")</li>
+                                    <li>@Html.ActionLink("Экспорт оценок", "ExportGrades", "Reports")</li>
+                                    <li>@Html.ActionLink("Успеваемость по факультетам", "FacultyCharts", "Reports")</li>
+                                    <li>@Html.ActionLink("Успеваемость по направлениям", "StatisticExport", "Reports")</li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrators") || User.IsInRole("DepartmentsManagers"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Кафедра <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    <li>@Html.ActionLink("Курсовые/Практики", "Index", "Courses")</li>
+                                    <li>@Html.ActionLink("Сведения об образовании", "IndexAll", "Educations")</li>
+                                    <li>@Html.ActionLink("Портфолио преподавателей", "TeachersPortfolio", "Tutors")</li>
+                                </ul>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Administrators") || User.IsInRole("TutorsManagers"))
+                        {
+                            <li class="dropdown">
+                                <a href="#" data-toggle="dropdown" class="dropdown-toggle">Портфолио <b class="caret"></b></a>
+                                <ul class="dropdown-menu">
+                                    @if (User.IsInRole("Administrators"))
+                                    {
+                                        <li>@Html.ActionLink("Разделы", "Index", "Sections")</li>
+                                        <li>@Html.ActionLink("Категории", "Index", "Catigories")</li>
+                                        <li class="divider"></li>
+                                    }
+                                    <li>@Html.ActionLink("Курируемые группы", "ListGroups", "Students")</li>
+                                    <li>@Html.ActionLink("Управление кураторством", "Index", "Tutors")</li>
+                                    <li>@Html.ActionLink("Портфолио студентов", "ListGroups", "Tutors")</li>
+                                    <li>@Html.ActionLink("Портфолио преподавателей", "TeachersPortfolio", "Tutors")</li>
+                                </ul>
+                            </li>
+                            if (User.IsInRole("Administrators"))
+                            {
+                                <li class="dropdown">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Настройки <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("Роли", "Index", "RolesAdmin")</li>
+                                        <li>@Html.ActionLink("Пользователи", "Index", "UsersAdmin")</li>
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Формы обучения", "Index", "FormOfTrainings")</li>
+                                        <li>@Html.ActionLink("Направления", "Index", "DirectionOfTrainings")</li>
+                                        <li>@Html.ActionLink("Программы", "Index", "Profiles")
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Факультеты", "Index", "Faculties")</li>
+                                        <li>@Html.ActionLink("Кафедры", "Index", "Departments")</li>
+                                        <li>@Html.ActionLink("Группы", "Index", "Groups")</li>
+                                        <li>@Html.ActionLink("Преподаватели и кафедры", "Index", "TeacherDepartments")</li>
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Параметры", "Index", "Settings")</li>
+
+                                    </ul>
+                                </li>
+                                <li class="dropdown">
+                                    <a href="#" data-toggle="dropdown" class="dropdown-toggle">Отчеты <b class="caret"></b></a>
+                                    <ul class="dropdown-menu">
+                                        <li>@Html.ActionLink("Статистика по ведомостям", "StatementsStatistic", "Reports")</li>
+                                        <li>@Html.ActionLink("Список пустых ведомостей", "StatementsNullable", "Reports")</li>
+
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Статистика по работам", "CoursesStatistic", "Reports")</li>
+                                        <li>@Html.ActionLink("Список пустых работ", "CoursesNullable", "Reports")</li>
+                                        <li>@Html.ActionLink("Процент публикации проектов", "CoursesFillPercent", "Reports")</li>
+                                        <li>@Html.ActionLink("Экспорт оценок", "ExportGrades", "Reports")</li>
+                                        <li>@Html.ActionLink("Успеваемость по филиалу", "BranchCharts", "Reports")</li>
+                                        <li>@Html.ActionLink("Успеваемость по факультетам", "FacultyCharts", "Reports")</li>
+                                        <li>@Html.ActionLink("Успеваемость по направлениям", "StatisticExport", "Reports")</li>
+                                        <li class="divider"></li>
+                                        <li>@Html.ActionLink("Журнал входа на сайт", "Index", "LogLogins")</li>
+
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    @Html.Partial("_LoginPartial")
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; 2018-@DateTime.Now.Year – СФ БашГУ</p>
+            </footer>
+        </div>
+    </main>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/datetime")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

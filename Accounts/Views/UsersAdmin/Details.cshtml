@@ -1,0 +1,123 @@
+﻿@model Accounts.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Подробнее о пользователе";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Логин
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lastname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Firstname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Middlename)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Middlename)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+		
+
+        @foreach (var item in ViewBag.RoleNames)
+        {
+
+            //@item
+
+            if (item == "Teachers")
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.Department.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Department.Name)
+                </dd>
+            }
+
+            if (item == "Students")
+            {
+                <dt>
+                    @Html.DisplayNameFor(model => model.Group.Name)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Group.Name)
+                </dd>
+
+                <dt>
+                    Номер зачетной книжки
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.NumberOfRecordBook)
+                </dd>
+            }
+        }
+        <dt>
+            DecanatId
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DecanatId)
+        </dd>
+		
+		<dt>
+            Ответ на секретный вопрос
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Answer)
+        </dd>
+
+    </dl>
+</div>
+<h4>Список ролей для этого пользователя</h4>
+@if (ViewBag.RoleNames.Count == 0)
+{
+    <hr />
+    <p>Роли для этого пользователя не найдены.</p>
+}
+
+<table class="table">
+
+    @foreach (var item in ViewBag.RoleNames)
+    {
+        <tr>
+            <td>
+                @item
+            </td>
+        </tr>
+    }
+</table>
+<p>
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад", "Index")
+</p>
+
+
+@Html.ActionLink("Карточка студента", "Details", "Students", new { id = Model.Id }, null) <br />
+

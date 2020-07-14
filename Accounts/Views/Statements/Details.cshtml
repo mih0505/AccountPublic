@@ -1,0 +1,146 @@
+﻿@model Accounts.Models.Statement
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Statement</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Group.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Group.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Profile.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Profile.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeacherDiscipline.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeacherDiscipline.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Number)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NameDiscipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameDiscipline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeControl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeControl)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupIdDecanate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupIdDecanate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateBegin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateBegin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateEnd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateEnd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreaterStatement)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreaterStatement)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CurrentYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZET)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZET)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hours)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hours)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

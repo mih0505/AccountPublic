@@ -1,0 +1,238 @@
+﻿@model IList<Accounts.Models.DiplomWork>
+
+@{
+    ViewBag.Title = "Список работ группы " + ViewBag.Group;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<br />
+@if (Model != null)
+{
+    <h3><a href="@Model[0].GIA.Link" target="_blank">Ссылка на видеоконференцию</a></h3>
+}
+
+@{ int i = 0; }
+@foreach (var item in Model)
+{
+    <table class="table table-bordered">
+        <tr>
+            <td rowspan="3" style="vertical-align: middle;">@{ ++i; } @Html.Raw(@i)</td>
+            <td colspan="5" width="50%">
+                <strong>Студент:</strong>
+                @item.StudentDiplom.Lastname
+                @item.StudentDiplom.Firstname
+                @if (!String.IsNullOrEmpty(item.StudentDiplom.Middlename))
+                {
+                    @item.StudentDiplom.Middlename
+                }
+            </td>
+            <td colspan="5" width="50%">
+                <strong>Руководитель:</strong>
+                @if (item.TeacherDiplom != null)
+                {
+                    @Html.Raw(item.TeacherDiplom.Lastname + " " + @item.TeacherDiplom.Firstname + " ");
+                    if (!String.IsNullOrEmpty(item.TeacherDiplom.Middlename))
+                    {
+                        @item.TeacherDiplom.Middlename
+                    }
+                }
+                else
+                {
+                    @Html.Raw("---");
+                }
+            </td>
+            <td rowspan="3" class="text-center" style="vertical-align: middle;">
+                @if (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+                {
+                    <a href="@Url.Action("Edit", "DiplomWorks", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                }
+            </td>
+
+            @*
+                @if (!String.IsNullOrEmpty(item.PathOther))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathOther, name = item.FileNameOther })" class="not-filled recent">Другое</a>
+                    if (item.DiplomIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathOther) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+            *@
+
+        <tr>
+            <td colspan="10">
+                <strong>Тема работы:</strong> @item.Topic
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathConducting))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathConducting, name = item.FileNameConducting })" class="not-filled recent">Заявление на ВКР</a>
+                    if (item.ConductingIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathConducting) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Заявление на ВКР");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathConfirmation))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathConfirmation, name = item.FileNameConfirmation })" class="not-filled recent">Заявление на утверждение темы</a>
+                    if (item.ConfirmationIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathConfirmation) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Заявление на утверждение темы");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathDeclaration))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathDeclaration, name = item.FileNameDeclaration })" class="not-filled recent">Заявление на изменение темы</a>
+                    if (item.DeclarationIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathDeclaration) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Заявление на изменение темы");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathСonsent))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathСonsent, name = item.FileNameСonsent })" class="not-filled recent">Согласие</a>
+                    if (item.СonsentIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathСonsent) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Согласие");
+                }
+            </td>
+
+            <td width="160">
+                @if (!String.IsNullOrEmpty(item.PathDiplom))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathDiplom, name = item.FileNameDiplom })" class="not-filled recent">ВКР (Word)</a>
+                    if (item.DiplomIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathDiplom) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("ВКР (Word)");
+                }
+
+                <br />
+
+                @if (!String.IsNullOrEmpty(item.PathDiplomPDF))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathDiplomPDF, name = item.FileNameDiplomPDF })" class="not-filled recent">ВКР (PDF)</a>
+                    if (item.DiplomIsBlockedPDF && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathDiplomPDF) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("ВКР (PDF)");
+                }
+            </td>
+                        
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathFeedback))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathFeedback, name = item.FileNameFeedback })" class="not-filled recent">Отзыв</a>
+                    if (item.FeedbackIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathFeedback) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Отзыв");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathPlagiarism))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathPlagiarism, name = item.FileNamePlagiarism })" class="not-filled recent">Заимствования</a>
+                    if (item.PlagiarismIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathPlagiarism) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Заимствования");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathReview))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathReview, name = item.FileNameReview })" class="not-filled recent">Рецензия</a>
+                    if (item.ReviewIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathReview) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Рецензия");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathApplication))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathApplication, name = item.FileNameApplication })" class="not-filled recent">Приложение</a>
+                    if (item.ApplicationIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathApplication) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Приложение");
+                }
+            </td>
+
+            <td>
+                @if (!String.IsNullOrEmpty(item.PathOther))
+                {
+                    <a href="@Url.Action("GetFile", new { path = item.PathOther, name = item.FileNameOther })" class="not-filled recent">Доп. документы</a>
+                    if (item.OtherIsBlocked && (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators")))
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = item.Id, field = nameof(item.PathOther) })"><span class="glyphicon glyphicon-trash text-danger"></span></a>
+                    }
+                }
+                else
+                {
+                    @Html.Raw("Доп. документы");
+                }
+            </td>
+        </tr>
+    </table>
+}
+
+
+<br />

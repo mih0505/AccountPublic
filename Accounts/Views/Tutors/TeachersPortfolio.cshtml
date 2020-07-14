@@ -1,0 +1,56 @@
+﻿@model IEnumerable<Accounts.Models.ReportPortfolio>
+
+@{
+    ViewBag.Title = "Список преподавателей";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.ActionLink("Экспорт в Excel", "Export")
+
+<table class="table">
+    <tr>
+        <th>
+            №
+        </th>
+        <th>
+            ФИО
+        </th>
+        <th>
+            Факультет
+        </th>
+        <th>
+            Кафедра
+        </th>
+        <th>
+            Наука
+        </th>
+    </tr>
+    @{ int i = 0; }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.Raw(++i)
+            </td>
+
+            <td>
+                @Html.ActionLink(item.Lastname +" "+ item.Firstname+" "+ item.Middlename,
+               "GetArtifacts", new { sectionId = 2, userId = item.Id })
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Faculty)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Science)
+            </td>
+        </tr>
+    }
+
+</table>

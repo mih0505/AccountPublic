@@ -1,0 +1,86 @@
+﻿@model IEnumerable<Accounts.Models.Load>
+
+@{
+    ViewBag.Title = "Список дисциплин";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Group)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Course)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Semester)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Students)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Discipline)
+        </th>  
+        <th>
+            @Html.DisplayNameFor(model => model.TypeLesson)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TypeControl)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoadClass)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LoadOther)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Note)
+        </th>        
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Group)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Semester)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Students)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Department)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Discipline)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TypeLesson)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TypeControl)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoadClass)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.LoadOther)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Note)
+        </td>        
+    </tr>
+    }
+
+</table>

@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Документы об образовании/обучении ";
+}
+
+<h2>@ViewBag.Title @if (ViewBag.Teacher != null) {@ViewBag.Teacher.LastnameFM; }</h2>
+
+<h3>Базовое образование</h3>
+    <p>
+        @Html.ActionLink("Добавить", "CreateBasicEdu")
+    </p>
+    @{ Html.RenderAction("IndexBasicEdu"); }
+<br />
+
+<h3>Ученая степень/звание</h3>
+    <p>
+        @Html.ActionLink("Добавить", "CreateAcademicDegree")
+    </p>
+    @{Html.RenderAction("IndexAcademicDegree"); }
+<br />
+
+<h3>Дополнительное профессиональное образование</h3>
+    <p>
+        @Html.ActionLink("Добавить", "CreateAdditionalEducation")
+    </p>
+    @{Html.RenderAction("IndexAdditionalEducation"); }

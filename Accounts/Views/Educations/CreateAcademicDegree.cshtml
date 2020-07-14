@@ -1,0 +1,97 @@
+﻿@model Accounts.Models.AcademicDegree
+
+@{
+    ViewBag.Title = "Добавить данные об степени/звании";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("CreateAcademicDegree", "Educations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @if ((User.IsInRole("Teachers") && User.IsInRole("DepartmentsManagers")) || User.IsInRole("Administrators"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.AcademicDegreeUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("AcademicDegreeUserId", null, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.AcademicDegreeUserId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
+        else
+        {@Html.HiddenFor(model => model.AcademicDegreeUserId, new { Value = @ViewBag.AcademicDegreeUserId })}
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.HiddenFor(model => model.AcademicDegreeUserId, new { Value = @ViewBag.BasicEducationUserId })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Requisites, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Requisites, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Requisites, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <input type="file" id="FileName" name="NameFile" />
+            <p>Размер файла не должен превышать 3 МБ. Доступны следующие форматы файлов: *.jpeg, *.jpg, *.pdf, *.zip, *.png"</p>
+            <div id="fileinfo" style="color:red;"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function updateSize() {
+            var file = document.getElementById("FileName").files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > 3 * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ext.toLowerCase() != "jpg" && ext.toLowerCase() != "jpeg" && ext.toLowerCase() != "jpg" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip" && ext.toLowerCase() != "png" && ext.toLowerCase() != "gif")
+                messageError += "Допускаются только файлы с расширениями: jpeg, jpg, pdf, zip, png, gif"
+            document.getElementById("fileinfo").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+        document.getElementById('FileName').addEventListener('change', updateSize);
+    </script>
+}

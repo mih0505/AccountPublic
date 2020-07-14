@@ -1,0 +1,214 @@
+﻿@model PagedList.IPagedList<Accounts.Models.StatementsList>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Список ведомостей";
+}
+
+
+<h2>@ViewBag.Title</h2>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    type = ViewBag.TypeFilter,
+    faculty = ViewBag.FacultyFilter,
+    form = ViewBag.FormFilter,
+    name = ViewBag.NameFilter,
+    group = ViewBag.GroupFilter,
+    academicYear = ViewBag.YearFilter,
+}))
+
+@if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+{
+    <p>
+        @Html.ActionLink("Создать ведомость", "Create")
+    </p>
+}
+
+@using (Html.BeginForm("Index", "Statements", new { sortOrder = Request.QueryString["sortOrder"], type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, group = ViewBag.GroupFilter, name = ViewBag.NameFilter, academicYear = ViewBag.YearFilter, course = ViewBag.CourseFilter }, FormMethod.Get))
+{
+    <div class="form-inline">
+        <div class="form-filter-events">
+            @Html.DropDownList("faculty", ViewBag.FacultyList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:155px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.DropDownList("form", ViewBag.FormList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:125px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.TextBox("name", ViewBag.NameFilter as string, htmlAttributes: new { @class = "form-control", placeholder = "Дисциплина", style = "max-width:180px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.TextBox("group", ViewBag.GroupFilter as string, htmlAttributes: new { @class = "form-control", placeholder = "Группа", style = "max-width:100px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.DropDownList("type", ViewBag.Types as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:135px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.DropDownList("course", ViewBag.Courses as List<SelectListItem>, htmlAttributes: new { @class = "form-control", placeholder = "Курс", style = "max-width:80px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.DropDownList("academicYear", ViewBag.Years as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:145px" })
+        </div>
+        <div class="form-filter-events">
+            <input type="submit" value="Фильтр" class="btn btn-default" />
+            <a class="btn btn-default" href="/Statements/ClearFilter">Очистить</a>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th style="min-width:40px;">
+            @Html.ActionLink("Факультет", "Index", new { sortOrder = ViewBag.FacultySortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "faculty_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+            else if (ViewBag.CurrentSort == "faculty_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:200px;">
+            @Html.ActionLink("Дисциплина", "Index", new { sortOrder = ViewBag.NameSortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "name_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+            else if (ViewBag.CurrentSort == "name_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:100px;">
+            @Html.ActionLink("Группа", "Index", new { sortOrder = ViewBag.GroupSortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "group_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+            else if (ViewBag.CurrentSort == "group_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:160px;">
+            Преподаватель
+        </th>
+        <th style="min-width:100px;">
+            @Html.ActionLink("Вид контроля", "Index", new { sortOrder = ViewBag.TypeSortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "type_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+            else if (ViewBag.CurrentSort == "type_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:100px;">
+            @Html.ActionLink("Курс", "Index", new { sortOrder = ViewBag.CourseSortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "course_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+            else if (ViewBag.CurrentSort == "course_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:30px;">
+            Семестр
+        </th>
+        <th style="min-width:50px;">
+            Дата закрытия
+        </th>
+        <th style="min-width:60px;">
+            Уч. год
+        </th>
+        <th style="min-width:60px;">
+            Часов
+        </th>
+        <th style="min-width:30px;">%</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AliasFaculty)
+            </td>
+            <td>
+                <a href="@Url.Action("StatementsDiscipline", new { id = item.Id })">
+                    @Html.DisplayFor(modelItem => item.NameDiscipline)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Teacher)<br />
+                @Html.DisplayFor(modelItem => item.Teacher2)<br />
+                @Html.DisplayFor(modelItem => item.Teacher3)<br />
+                @Html.DisplayFor(modelItem => item.Teacher4)<br />
+                @Html.DisplayFor(modelItem => item.Teacher5)<br />
+                @Html.DisplayFor(modelItem => item.Teacher6)<br />
+                @Html.DisplayFor(modelItem => item.Teacher7)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TypeControl)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)
+            </td>
+            <td>
+                @item.DateEnd.ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                @item.CurrentYear
+            </td>
+            <td>
+                @if (item.ZET != null)
+                {@Html.DisplayFor(modelItem => item.ZET); @Html.Raw(" /")}
+                @Html.DisplayFor(modelItem => item.Hours)
+            </td>
+            <td>
+                @{ var percent = (double)item.Complete / item.CountStudents * 100; }
+                @if (percent == 100)
+                {
+                    @Html.Raw("<span class=\"notice notice-green\">" + @percent.ToString("0") + "%</span>")
+                }
+                else if (percent < 100 && percent > 70)
+                {
+                    @Html.Raw("<span class=\"notice notice-blue\">" + @percent.ToString("0") + "%</span>")
+                }
+                else if (percent < 70 && percent > 50)
+                {
+                    @Html.Raw("<span class=\"notice notice-yellow\">" + @percent.ToString("0") + "%</span>")
+                }
+                else if (percent < 50)
+                {
+                    @Html.Raw("<span class=\"notice notice-danger\">" + @percent.ToString("0") + "%</span>")
+                }
+            </td>
+            <td>
+                @if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+                {
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+    {
+        page,
+        sortOrder = Request.QueryString["sortOrder"],
+        type = ViewBag.TypeFilter,
+        faculty = ViewBag.FacultyFilter,
+        form = ViewBag.FormFilter,
+        name = ViewBag.NameFilter,
+        group = ViewBag.GroupFilter,
+        academicYear = ViewBag.YearFilter,
+    }))

@@ -1,0 +1,349 @@
+﻿@using Accounts.Models
+@model FacultyStatisticViewModel
+
+@{
+    ViewBag.Title = "Успеваемость по факультету";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("FacultyCharts", "Reports"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FacultyId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FacultyId, ViewBag.FacultiesList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", @id = "faculty" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Year, ViewBag.YearsList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FormOfTrainingId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.FormOfTrainingId, ViewBag.FormsOfTrainingList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Term, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Term, ViewBag.TermsList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" name="buttonAction" value="Показать" class="btn btn-primary" />
+                <input type="submit" name="buttonAction" value="Экспортировать" class="btn btn-default" />
+            </div>
+        </div>
+
+        @Html.HiddenFor(model => model.FacultyId)
+        @Html.HiddenFor(model => model.Year)
+        @Html.HiddenFor(model => model.FormOfTrainingId)
+        @Html.HiddenFor(model => model.Term)
+        @Html.HiddenFor(model => model.Date)
+
+        @if (ViewBag.ProfilesStatistic != null)
+        {
+            <table>
+                <tr>
+                    <th rowspan="2" class="excel-table">
+                        Направление (профиль)
+                    </th>
+                    <th colspan="5" class="excel-table">
+                        Сдали все экзамены
+                    </th>
+                    <th colspan="3" class="excel-table">
+                        Общая статистика
+                    </th>
+                </tr>
+                <tr>
+                    <th class="excel-table">
+                        Всего, чел., %
+                    </th>
+                    <th class="excel-table">
+                        На отл., чел., %
+                    </th>
+                    <th class="excel-table">
+                        На хор. и отл., чел., %
+                    </th>
+                    <th class="excel-table">
+                        На хор., чел., %
+                    </th>
+                    <th class="excel-table">
+                        Имеют удовлетв., чел., %
+                    </th>
+                    <th class="excel-table">
+                        Успеваемость, %
+                    </th>
+                    <th class="excel-table">
+                        Качество образования, %
+                    </th>
+                    <th class="excel-table">
+                        Отличники, %
+                    </th>
+                </tr>
+
+                @foreach (ChartProfileStatisticViewModel item in ViewBag.ProfilesStatistic)
+                {
+                    <tr>
+                        <td rowspan="2" class="excel-table">
+                            @Html.DisplayFor(modelItem => item.ProfileName)
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedCount)
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnExcellent)
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnVeryWell)
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnGood)
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnOkey)
+                        </td>
+                        <td rowspan="2" class="excel-table">
+                            @Html.DisplayFor(modelItem => item.PerfomancePercent)%
+                        </td>
+                        <td rowspan="2" class="excel-table">
+                            @Html.DisplayFor(modelItem => item.QualityPercent)%
+                        </td>
+                        <td rowspan="2" class="excel-table">
+                            @Html.DisplayFor(modelItem => item.ExcellentStudentsPercent)%
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedCountPercent)%
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnExcellentPercent)%
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnVeryWellPercent)%
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnGoodPercent)%
+                        </td>
+                        <td class="excel-table">
+                            @Html.DisplayFor(modelItem => item.AllPassedOnOkeyPercent)%
+                        </td>
+                    </tr>
+                }
+
+                <tr>
+                    <td colspan="6" class="excel-table">
+                        <b>Средние значения</b>
+                    </td>
+                    <td class="excel-table">
+                        @ViewBag.AveragePerfomance%
+                    </td>
+                    <td class="excel-table">
+                        @ViewBag.AverageQuality%
+                    </td>
+                    <td class="excel-table">
+                        @ViewBag.AverageExcellentStudent%
+                    </td>
+                </tr>
+            </table>
+        }
+
+        @if (ViewBag.ChartPerfomance != null)
+        {
+            <canvas id="perfomanceChart" width="400" height="100">
+            </canvas>
+        }
+
+        @if (ViewBag.ChartQuality != null)
+        {
+            <canvas id="qualityChart" width="400" height="100">
+            </canvas>
+        }
+
+        @if (ViewBag.ChartExcellentStudents != null)
+        {
+            <canvas id="excellentStudentsChart" width="400" height="100">
+            </canvas>
+        }
+
+        @if (ViewBag.ChartAverage != null)
+        {
+            <canvas id="averageChart" width="400" height="100">
+            </canvas>
+        }
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/scripts/Chart.min.js")
+
+    <script>
+        var perfomanceChart = document.getElementById('perfomanceChart');
+        var qualityChart = document.getElementById('qualityChart');
+        var excellentStudentsChart = document.getElementById('excellentStudentsChart');
+        var averageChart = document.getElementById('averageChart');
+
+        var perfomanceBarChart = new Chart(perfomanceChart, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(ViewBag.ChartLabels)],
+                datasets: [{
+                    label: 'Успеваемость, %',
+                    data: [@ViewBag.ChartPerfomance],
+                    backgroundColor: [
+                        @Html.Raw(ViewBag.Background)
+                    ],
+                    borderColor: [
+                        @Html.Raw(ViewBag.Border)
+                    ],
+                    borderWidth: 1
+                }],
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Успеваемость, %'
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var qualityBarChart = new Chart(qualityChart, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(ViewBag.ChartLabels)],
+                datasets: [{
+                    label: 'Качество образования, %',
+                    data: [@ViewBag.ChartQuality],
+                    backgroundColor: [
+                        @Html.Raw(ViewBag.Background)
+                    ],
+                    borderColor: [
+                        @Html.Raw(ViewBag.Border)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Качество образования, %'
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var excellentStudentsBarChart = new Chart(excellentStudentsChart, {
+            type: 'bar',
+            data: {
+                labels: [@Html.Raw(ViewBag.ChartLabels)],
+                datasets: [{
+                    label: 'Отличники, %',
+                    data: [@ViewBag.ChartExcellentStudents],
+                    backgroundColor: [
+                        @Html.Raw(ViewBag.Background)
+                    ],
+                    borderColor: [
+                        @Html.Raw(ViewBag.Border)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Отличники, %'
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+
+        var averageBarChart = new Chart(averageChart, {
+            type: 'bar',
+            data: {
+                labels: ['Успеваемость', 'Качество образования', 'Отличники'],
+                datasets: [{
+                    label: 'Средние значения по факультету, %',
+                    data: [@ViewBag.ChartAverage],
+                    backgroundColor: [
+                        @Html.Raw(ViewBag.Background)
+                    ],
+                    borderColor: [
+                        @Html.Raw(ViewBag.Border)
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Средние значения по факультету, %'
+                },
+                legend: {
+                    display: false
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+}

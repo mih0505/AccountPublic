@@ -1,0 +1,138 @@
+﻿@model Accounts.Models.Discipline
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Discipline</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Profile.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Profile.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hourse)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hourse)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZET)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZET)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YearOfStudy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YearOfStudy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcademicYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcademicYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FormReporting)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FormReporting)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeTeacherDiscipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeTeacherDiscipline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoodleURL)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoodleURL)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoodleNameCourse)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoodleNameCourse)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeTeacherMoodle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeTeacherMoodle)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

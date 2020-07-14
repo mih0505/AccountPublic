@@ -1,0 +1,170 @@
+﻿@model Accounts.Models.Declaration
+
+@{
+    ViewBag.Title = "Заявление";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("Declaration", "Declarations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @if (Model != null)
+        {
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            if (!User.IsInRole("Students"))
+            {
+                @Html.HiddenFor(model => model.UserId)
+                @Html.HiddenFor(model => model.DateAdd)
+            }
+
+            <h3>
+                Уважаемые студенты. В связи с принятием мер по предупреждению распространения новой коронавирусной инфекции в СФ БашГУ с 23.03.2020 вводится онлайн-формат обучения.
+                Просим Вас скачать бланк заявления, заполнить его и прикрепить сканированный вариант заполненного заявления в поле ниже.
+            </h3>
+            <p><a href="@Url.Action("GetFile", new { path = @"d:\WebSites\Account\Declarations\Zayavlenie.docx", name = "Zayavlenie.docx" })" class="not-filled recent">Шаблон заявления</a><br /></p>
+            <div class="form-group">
+                @Html.Label("Заполненное заявление", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.HiddenFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.HiddenFor(model => model.NameFile, new { htmlAttributes = new { @class = "form-control", type = "file" } })
+                    @Html.ValidationMessageFor(model => model.NameFile, "", new { @class = "text-danger" })
+                    @if (Model.Path != null)
+                    {
+                        string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("Declarations") - 1);
+                        string subPath = shortPath.Substring(shortPath.LastIndexOf('.'));
+
+                        if (subPath == ".pdf" || subPath == ".PDF")
+                        {
+                            <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                <img src="~/Images/pdf-icon.png" style="width:25px; height:25px;" />
+                                @Model.NameFile
+                            </a>
+                        }
+                        else if (subPath == ".zip" || subPath == ".ZIP")
+                        {
+                            <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                <img src="~/Images/zip-files.png" style="width:25px; height:25px;" />
+                                @Model.NameFile
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                <img src="@shortPath" style="width:300px; height:auto;" />
+                            </a>
+                        }
+                    }
+
+                </div>
+                <div class="col-md-10">
+                    <input type="file" id="File" name="NameFile" />
+                    <p>Размер файла не должен превышать 5 МБ. Доступны следующие форматы файлов: *.jpeg, *.jpg, *.pdf, *.zip, *.png"</p>
+                    <div id="fileinfo" style="color:red;"></div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Загрузить" class="btn btn-default" />
+                </div>
+            </div>
+        }
+        else
+        {
+            <h3>
+                Уважаемые студенты. В связи с принятием мер по предупреждению распространения новой коронавирусной инфекции в СФ БашГУ с 23.03.2020 вводится онлайн-формат обучения.
+                Просим Вас скачать бланк заявления, заполнить его и прикрепить сканированный вариант заполненного заявления в поле ниже.
+            </h3>
+            <p><a href="@Url.Action("GetFile", new { path = @"d:\WebSites\Account\Declarations\Zayavlenie.docx", name = "Zayavlenie.docx" })" class="not-filled recent">Шаблон заявления</a><br /></p>
+            <div class="form-group">
+                @Html.Label("Заполненное заявление", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.HiddenFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.HiddenFor(model => model.NameFile, new { htmlAttributes = new { @class = "form-control", type = "file" } })
+                    @Html.ValidationMessageFor(model => model.NameFile, "", new { @class = "text-danger" })
+                    @*@if (Model.Path != null)
+                        {
+                            string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("Declarations") - 1);
+                            if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".pdf")
+                            {
+                                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                    <img src="~/Images/pdf-icon.png" style="width:25px; height:25px;" />
+                                    @Model.NameFile
+                                </a>
+                            }
+                            else if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".zip")
+                            {
+                                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                    <img src="~/Images/zip-files.png" style="width:25px; height:25px;" />
+                                    @Model.NameFile
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                                    <img src="@shortPath" style="width:300px; height:auto;" />
+                                </a>
+                            }
+                        }*@
+
+                </div>
+                <div class="col-md-10">
+                    <input type="file" id="NameFile" name="NameFile" />
+                    <p>Размер файла не должен превышать 5 МБ. Доступны следующие форматы файлов: *.jpeg, *.jpg, *.pdf, *.zip, *.png"</p>
+                    <div id="fileinfo" style="color:red;"></div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Загрузить" class="btn btn-default" />
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <div>
+        @if (User.IsInRole("Students"))
+        {
+            @Html.ActionLink("Вернуться на главную страницу", "Index", "Home");
+        }
+        else
+        {
+            @Html.ActionLink("Вернуться к списку", "Index");
+        }
+    </div>
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function updateSize() {
+            var file = document.getElementById("File").files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > 5 * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ext.toLowerCase() != "jpg" && ext.toLowerCase() != "jpeg" && ext.toLowerCase() != "jpg" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip" && ext.toLowerCase() != "png" && ext.toLowerCase() != "gif")
+                messageError += "Допускаются только файлы с расширениями: jpeg, jpg, pdf, zip, png, gif"
+            document.getElementById("fileinfo").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+        document.getElementById('File').addEventListener('change', updateSize);
+    </script>
+}
+
+
+

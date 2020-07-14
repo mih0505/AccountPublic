@@ -1,0 +1,23 @@
+﻿@model Accounts.Models.GIA
+
+@{
+    ViewBag.Title = "Удалить итоговую аттестацию";
+}
+
+    <h2>@ViewBag.Title</h2>
+
+<h3>Вы действительно хотите удалить итоговую аттестацию для группы @Model.Group.Name?</h3>
+<h4 class="text-danger">Данная ведомость содержит @ViewBag.Diploms файлов, которые будут удалены вместе с ведомостью группы!!!</h4>
+
+<br />
+<div>
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

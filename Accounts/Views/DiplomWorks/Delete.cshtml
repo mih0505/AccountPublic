@@ -1,0 +1,28 @@
+﻿@model Accounts.Models.DiplomWork
+
+@{
+    ViewBag.Title = "Удаление документа";
+}
+
+    <h2>@ViewBag.Title</h2>
+
+    <h3>
+        Вы действительно хотите удалить документ студента @Model.StudentDiplom.Lastname @Model.StudentDiplom.Firstname
+        @if (!string.IsNullOrEmpty(Model.StudentDiplom.Middlename))
+        { 
+            @Model.StudentDiplom.Middlename; 
+        }?
+    </h3>
+<div>
+    
+    <hr />
+    
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Details", "GIAs")
+        </div>
+    }
+</div>

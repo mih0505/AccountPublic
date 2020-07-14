@@ -1,0 +1,145 @@
+﻿@model IEnumerable<Accounts.Models.StatementViewModel>
+
+@{
+    ViewBag.Title = "Учебная деятельность";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+@foreach (var sem in ViewBag.CountSemesters)
+{
+    if (sem == 1 || sem == 2)
+    {
+        <h3>1 курс @sem семестр</h3>
+    }
+    else if (sem == 3 || sem == 4)
+    {
+        <h3>2 курс @sem семестр</h3>
+    }
+    else if (sem == 5 || sem == 6)
+    {
+        <h3>3 курс @sem семестр</h3>
+    }
+    else if (sem == 7 || sem == 8)
+    {
+        <h3>4 курс @sem семестр</h3>
+    }
+    else if (sem == 9 || sem == 10)
+    {
+        <h3>5 курс @sem семестр</h3>
+    }
+    <table class="table">
+        <tr>
+            <th>
+                Дисциплина
+            </th>
+            <th>
+                Вид контроля
+            </th>
+            <th>
+                Преподаватель
+            </th>
+            <th>
+                Курс
+            </th>
+            <th>
+                Семестр
+            </th>
+            <th>
+                Дата
+            </th>
+            <th>
+                Рейтинг
+            </th>
+            <th>
+                Оценка
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            if (sem == item.Semester)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameDiscipline)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TypeControl)
+                    </td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(item.TeacherStatement))
+                        {
+                            @Html.DisplayFor(modelItem => item.TeacherStatement);
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.Teacher)
+                            if (!String.IsNullOrEmpty(item.Teacher2))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher2);
+                            }
+                            if (!String.IsNullOrEmpty(item.Teacher3))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher3);
+                            }
+                            if (!String.IsNullOrEmpty(item.Teacher4))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher4);
+                            }
+                            if (!String.IsNullOrEmpty(item.Teacher5))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher5);
+                            }
+                            if (!String.IsNullOrEmpty(item.Teacher6))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher6);
+                            }
+                            if (!String.IsNullOrEmpty(item.Teacher7))
+                            {
+                                @Html.Raw("<br />");
+                                @Html.DisplayFor(modelItem => item.Teacher7);
+                            }
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Course)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Semester)
+                    </td>
+                    <td>
+                        @if (@item.Date != null)
+                        {
+                            DateTime date = Convert.ToDateTime(@item.Date);
+                            @Html.Raw("<span>" + date.ToString("dd/MM/yyyy") + "</span>");
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TotalPoint)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Grade)
+                    </td>
+                </tr>
+            }
+        }
+
+    </table>
+}
+@if (ViewBag.StudentRating == null)
+{
+    <h3 style="text-align:center;">
+        Данные об оценках не обнаружены
+    </h3>
+}
+else
+{
+    <h3 style="text-align:center;">Ваш рейтинг: @ViewBag.StudentRating &nbsp;&nbsp;&nbsp;&nbsp;Средний балл: @String.Format("{0:#.##}", ViewBag.Avg)</h3>
+}

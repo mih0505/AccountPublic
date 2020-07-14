@@ -1,0 +1,22 @@
+﻿@model Accounts.Models.GIA
+
+@{
+    ViewBag.Title = "Защита группы " + @Model.Group.Name;
+}
+
+<h2>@ViewBag.Title</h2>
+
+<video style="margin:auto;" id="my-video"
+       class="video-js"
+       controls
+       preload="auto"
+       width="720"
+       height="480"
+       data-setup="{}">
+    <source src="~/@Model.PathVideo" type="video/mp4">
+    Ваш браузер не поддерживает показ видео.
+</video>
+
+@section Scripts {
+    <script src="~/Scripts/video.min.js"></script>
+}

@@ -1,0 +1,72 @@
+﻿@model PagedList.IPagedList<Accounts.Models.Artifact>
+@using PagedList.Mvc;
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>
+                Название
+            </th>
+            <th>
+                Дата
+            </th>
+            <th>
+                Место проведения
+            </th>
+            <th>
+                Дополнительная информация
+            </th>
+            <th>
+                Ссылка на подтверждающий документ
+            </th>
+            <th>
+                Файл-копия подтверждения
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0;}
+        @foreach (var item in Model)
+        {            
+                <tr>
+                    <td>@(++i)</td>
+                    <td>
+                        <a href="@Url.Action("Details", new { id = item.Id })">
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </a>
+                    </td>
+                    <td>
+                        @*@Html.DisplayFor(modelItem => item.DateBegin, )*@
+
+                        @item.DateBegin.ToString("dd/MM/yyyy")
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Location)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AdditionalInformation)
+                    </td>
+                    <td>
+                        @if (item.Link != null)
+                        {
+                            <a href="@item.Link" target="_blank">Ссылка</a>
+                        }
+                    </td>
+                    <td>
+                        <a href="@Url.Action("GetFile", new { path = item.Path, name = item.NameFile })" class="not-filled recent">@item.NameFile</a><br />
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a> <br />
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    </td>
+                </tr>
+        }
+    </tbody>
+</table>
+<p>Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount</p>
+
+@Html.PagedListPager(Model, page => Url.Action("GetArtifacts", new { page }))
+

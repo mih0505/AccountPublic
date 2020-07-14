@@ -1,0 +1,109 @@
+﻿@model IEnumerable<Accounts.Models.StatementNullableViewModel>
+
+@{
+    if (Model != null)
+    { ViewBag.Title = "Список пустых ведомостей за прошлые семестры"; }
+    else
+    { ViewBag.Title = "Пустые ведомости отсутствуют"; }
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (Model != null)
+{
+    <table class="table">
+        <tr>
+            <th style="min-width:140px;">
+                Факультет
+            </th>
+            <th style="min-width:200px;">
+                Дисциплина
+            </th>
+            <th style="min-width:100px;">
+                Группа
+            </th>
+            <th style="min-width:160px;">
+                Преподаватель
+            </th>
+            <th style="min-width:100px;">
+                Вид контроля
+            </th>
+            <th style="min-width:100px;">
+                Курс
+            </th>
+            <th style="min-width:30px;">
+                Семестр
+            </th>
+            <th style="min-width:50px;">
+                Дата закрытия
+            </th>
+            <th style="min-width:60px;">
+                Уч. год
+            </th>
+            <th style="min-width:60px;">
+                Часов
+            </th>
+            <th></th>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FacultyName)
+                </td>
+                <td>
+                    <a href="@Url.Action("StatementsDiscipline", "Statements", new { id = item.Id })">
+                        @Html.DisplayFor(modelItem => item.Discipline)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.GroupName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Teacher)
+                    @if (item.Teacher2 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher2)}
+                    @if (item.Teacher3 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher3)}
+                    @if (item.Teacher4 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher4)}
+                    @if (item.Teacher5 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher5)}
+                    @if (item.Teacher6 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher6)}
+                    @if (item.Teacher7 != "")
+                    {<br />@Html.DisplayFor(modelItem => item.Teacher7)}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TypeControl)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Semester)
+                </td>
+                <td>
+                    @item.Date.ToString("dd/MM/yyyy")
+                </td>
+                <td>
+                    @item.Years
+                </td>
+                <td>
+                    @if (item.ZET != null)
+                    {@Html.DisplayFor(modelItem => item.ZET); @Html.Raw(" /")}
+                    @Html.DisplayFor(modelItem => item.Hours)
+                </td>
+                <td>
+                    @if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+                    {
+                        <a href="@Url.Action("Edit", "Statements", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="@Url.Action("Delete", "Statements", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+
+                </td>
+            </tr>
+        }
+
+    </table>
+}

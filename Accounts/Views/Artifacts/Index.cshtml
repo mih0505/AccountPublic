@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Accounts.Models.Artifact>
+
+@{
+    ViewBag.Title = ViewBag.Section.Alias;
+}
+
+<h2>@ViewBag.Section.Alias</h2>
+<p>
+    @ViewBag.Section.Description
+</p>
+
+@{
+    foreach (var catigory in ViewBag.Catigories)
+    {
+        int i = 0;
+        string name = catigory.Name;
+        if (!User.IsInRole("Students") && name == "Статьи")
+        {
+            <h3>Публикации</h3>
+        }
+        else
+        {
+            <h3>@catigory.Name</h3>
+        }
+        <p>
+            @Html.ActionLink("Добавить достижение", "Create", new { id = @catigory.Id })
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        №
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateBegin)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Location)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdditionalInformation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Link)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NameFile)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    if (catigory.Id == item.CatigoryId)
+                    {
+                        <tr>
+                            <td>@(++i)</td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = item.Id })">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </a>
+                            </td>
+                            <td>
+                                @item.DateBegin.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Location)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdditionalInformation)
+                            </td>
+                            <td>
+                                @if (item.Link != null)
+                                {
+                                    <a href="@item.Link" target="_blank">Ссылка</a>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("GetFile", new { path = item.Path, name = item.NameFile })" class="not-filled recent">@item.NameFile</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    }
+                }                
+
+            </tbody>
+        </table><br /><br /><br />
+    }
+}

@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Accounts.Models.ApplicationUser>
+
+
+@{
+    ViewBag.Title = "Список группы: ";
+}
+
+<h2>@ViewBag.Title @ViewBag.CurrentGroup.Name</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            №
+        </th>
+        <th>
+            ФИО
+        </th>
+        <th>
+            Номер зачетки
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.MoodleId)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DecanatId)
+        </th>
+        <th></th>
+
+    </tr>
+    @{ int i = 0; }
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+             @Html.Raw(++i)
+        </td>
+        <td>
+            <a href="@Url.Action("Details", "UsersAdmin", new { id = item.Id })">
+                @Html.DisplayFor(modelItem => item.Lastname)
+
+                @Html.DisplayFor(modelItem => item.Firstname)
+
+                @Html.DisplayFor(modelItem => item.Middlename)
+            </a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfRecordBook)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.MoodleId)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DecanatId)
+        </td>
+        <td>
+            <a href="@Url.Action("Edit", "UsersAdmin", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a href="@Url.Action("Delete", "UsersAdmin", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+        </td>
+    </tr>
+    }
+
+</table>

@@ -1,0 +1,137 @@
+﻿@using Microsoft.AspNet.Identity
+@model PagedList.IPagedList<Accounts.Models.Journal>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Список журналов";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    discipline = ViewBag.Discipline,
+    group = ViewBag.GroupFilter,
+    course = ViewBag.CourseFilter,
+    teacher = ViewBag.TeacherFilter
+    }))
+
+@if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators") || User.IsInRole("Teachers"))
+{
+<p>
+    @Html.ActionLink("Создать журнал", "Create") &nbsp;&nbsp;&nbsp;
+    <a href="/Journals/ExportGrades">Экспорт итогов</a>
+</p>
+}
+
+@using (Html.BeginForm("Index", "Journals", new { sortOrder = Request.QueryString["sortOrder"], faculty = ViewBag.FacultyFilter, group = ViewBag.GroupFilter, discipline = ViewBag.Discipline, teacher = ViewBag.TeacherFilter, course = ViewBag.CourseFilter }, FormMethod.Get))
+{
+    <div class="form-inline">
+
+        <div class="form-filter-events">
+            @Html.DropDownList("faculty", ViewBag.FacultyList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:155px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.TextBox("group", ViewBag.GroupFilter as string, htmlAttributes: new { @class = "form-control", placeholder = "Группа", style = "max-width:100px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.TextBox("discipline", ViewBag.Discipline as string, htmlAttributes: new { @class = "form-control", placeholder = "Дисциплина", style = "max-width:180px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.TextBox("teacher", ViewBag.TeacherFilter as string, htmlAttributes: new { @class = "form-control", placeholder = "Преподаватель", style = "max-width:155px" })
+        </div>
+        <div class="form-filter-events">
+            @Html.DropDownList("course", ViewBag.Courses as List<SelectListItem>, htmlAttributes: new { @class = "form-control", placeholder = "Курс", style = "max-width:80px" })
+        </div>
+
+        <div class="form-filter-events">
+            <input type="submit" value="Фильтр" class="btn btn-default" />
+            <a class="btn btn-default" href="/Journals/ClearFilter">Очистить</a>
+            
+        </div>
+    </div>
+}
+
+
+<table class="table">
+    <tr>
+        <th style="min-width:40px;">
+            Факультет
+        </th>
+
+        <th style="max-width:150px;">
+            @Html.ActionLink("Группа", "Index", new { sortOrder = ViewBag.GroupSortParm, name = ViewBag.DisciplineFilter, group = ViewBag.GroupFilter })
+            @if (ViewBag.CurrentSort == "group_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span> }
+            else if (ViewBag.CurrentSort == "group_desc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+        </th>
+
+        <th style="min-width:200px;">
+            @Html.ActionLink("Дисциплина", "Index", new { sortOrder = ViewBag.DisciplineSortParm, name = ViewBag.DisciplineFilter, group = ViewBag.GroupFilter })
+            @if (ViewBag.CurrentSort == "discipline_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span> }
+            else if (ViewBag.CurrentSort == "discipline_desc")
+            { <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+        </th>
+        <th style="max-width:70px;">
+            Семестр
+        </th>
+        <th style="max-width:200px;">
+            Преподаватель
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Faculty.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.GroupName)
+            </td>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.Id })">
+                    @Html.DisplayFor(modelItem => item.Discipline)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Semester)<br />
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeacherName.LastnameFM)<br />
+            </td>
+            <td>
+                @if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+                {
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                }
+                else if (User.IsInRole("Teachers"))
+                {
+                    if (item.TeacherNameId == User.Identity.GetUserId())
+                    {
+                        <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    discipline = ViewBag.Discipline,
+    group = ViewBag.GroupFilter,
+    faculty = ViewBag.FacultyFilter,
+    teacher = ViewBag.TeacherFilter
+}))

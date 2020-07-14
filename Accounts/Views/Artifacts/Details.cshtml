@@ -1,0 +1,86 @@
+﻿@model Accounts.Models.Artifact
+
+@{
+    ViewBag.Title = ViewBag.CurrentCatigory.Name + ": " + Model.Name;
+}
+
+<h2>@ViewBag.CurrentSection.Alias</h2>
+<h3>@ViewBag.CurrentCatigory.Name</h3>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateBegin)            
+        </dt>
+
+        <dd>            
+            @Model.DateBegin.ToString("dd/MM/yyyy")
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Location)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Location)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AdditionalInformation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AdditionalInformation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Link)
+        </dt>
+
+        <dd>
+            @if (Model.Link != null)
+            {
+                <a href="@Model.Link" target="_blank">Ссылка</a>
+            }
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NameFile)
+        </dt>
+
+        <dd>
+            @if (Model.Path != null)
+            {
+                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">@Model.NameFile</a><br />
+
+                string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("Portfolio") - 1);
+                if (shortPath.Substring(shortPath.LastIndexOf('.')) != ".pdf" && shortPath.Substring(shortPath.LastIndexOf('.')) != ".zip")
+                {
+                    <img src="@shortPath" style="width:300px; height:auto;" />
+                }
+            }
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    
+    @if (User.IsInRole("Students"))
+    {
+        @Html.ActionLink("Вернуться к списку достижений", "Index", new { id = @ViewBag.CurrentCatigory.SectionId });
+    }
+    else
+    {
+        @Html.ActionLink("Вернуться к списку достижений", "GetArtifacts", "Tutors", new { sectionId = @ViewBag.CurrentCatigory.SectionId, userId = Model.UserId }, null);
+    }
+</p>

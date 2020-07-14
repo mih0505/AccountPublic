@@ -1,0 +1,120 @@
+﻿@model Accounts.Models.CourseWorkStudent
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>CourseWorkStudent</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Course.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Student.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Student.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Teacher.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Teacher.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupIdSite)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupIdSite)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.GroupIdDecanate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupIdDecanate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateUpload)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateUpload)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IdSudentDecanate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IdSudentDecanate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Grade)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Grade)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Path)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Path)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NameFile)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameFile)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsBlocked)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsBlocked)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

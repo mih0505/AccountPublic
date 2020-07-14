@@ -1,0 +1,117 @@
+﻿@model IEnumerable<Accounts.Models.Plan>
+
+@{
+    ViewBag.Title = "Учебный план";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Plan", "Home", new { sortOrder = Request.QueryString["sortOrder"], name = ViewBag.NameFilter, course = ViewBag.CourseFilter, session = ViewBag.SessionFilter, controls = ViewBag.ControlsFilter }, FormMethod.Get))
+{
+    <div class="form-inline" style="margin-bottom:10px">
+
+        <div class="form-filter-events">
+            <label class="control-label">Название: </label>
+            @Html.TextBox("name", "", htmlAttributes: new { @class = "form-control", style = "max-width:120px" })
+        </div>
+
+        <div class="form-filter-events">
+            <label class="control-label">Курс: </label>
+            @Html.DropDownList("course", (SelectList)ViewBag.CoursesList, "Все", htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+        </div>
+
+        <div class="form-filter-events">
+            <label class="control-label">Семестр: </label>
+            @Html.DropDownList("session", (SelectList)ViewBag.SessionList, "Все", htmlAttributes: new { @class = "form-control", style = "max-width:145px" })
+        </div>
+
+        <div class="form-filter-events">
+            <label class="control-label">Контроль: </label>
+            @Html.DropDownList("controls", (SelectList)ViewBag.ControlsList, "Все", htmlAttributes: new { @class = "form-control", style = "max-width:145px" })
+        </div>
+
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+        <a class="btn btn-default" href="/Home/Plan">Очистить</a>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            Блок
+        </th>
+        <th>
+            @Html.ActionLink("Дисциплина", "Plan", new { sortOrder = ViewBag.NameSortParm, course = ViewBag.CourseFilter, name = ViewBag.NameFilter, session = ViewBag.SessionFilter, controls = ViewBag.ControlsFilter })
+             
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.AllHours)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.IndependentWork)
+        </th>
+        <th>
+            @Html.ActionLink("Курс", "Plan", new { sortOrder = ViewBag.CourseSortParm, course = ViewBag.CourseFilter, name = ViewBag.NameFilter, session = ViewBag.SessionFilter, controls = ViewBag.ControlsFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Семестр", "Plan", new { sortOrder = ViewBag.SessionSortParm, course = ViewBag.CourseFilter, name = ViewBag.NameFilter, session = ViewBag.SessionFilter, controls = ViewBag.ControlsFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Контроль", "Plan", new { sortOrder = ViewBag.ControlsSortParm, course = ViewBag.CourseFilter, name = ViewBag.NameFilter, session = ViewBag.SessionFilter, controls = ViewBag.ControlsFilter })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Lecture)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.PracticalWork)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.LaboratoryWork)
+        </th>
+        @*<th>
+                @Html.DisplayNameFor(model => model.IndividualLessons)
+            </th>*@
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Block)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+                <br /> <span style="color:darkslategrey;font-style: italic;">(@Html.DisplayFor(modelItem => item.Competences))</span>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AllHours)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IndependentWork)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Session)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Controls)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Lecture)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PracticalWork)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LaboratoryWork)
+            </td>
+            @*<td>
+                    @Html.DisplayFor(modelItem => item.IndividualLessons)
+                </td>*@
+        </tr>
+    }
+
+</table>
+

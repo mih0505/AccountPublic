@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Документы об образовании/обучении";
+}
+
+<h2>@ViewBag.Title</h2>
+@Html.ActionLink("Экспорт в Excel", "Export")
+<h3>Базовое образование</h3>
+<p>
+    @Html.ActionLink("Добавить", "CreateBasicEdu")
+</p>
+@{Html.RenderAction("IndexAllBasicEdu"); }
+<br />
+
+<h3>Ученая степень/звание</h3>
+<p>
+    @Html.ActionLink("Добавить", "CreateAcademicDegree")
+</p>
+@{Html.RenderAction("IndexAllAcademicDegree"); }
+<br />
+
+<h3>Дополнительное профессиональное образование</h3>
+<p>
+    @Html.ActionLink("Добавить", "CreateAdditionalEducation")
+</p>
+@{Html.RenderAction("IndexAllAdditionalEducation"); }

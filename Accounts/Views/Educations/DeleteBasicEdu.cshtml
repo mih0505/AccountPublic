@@ -1,0 +1,80 @@
+﻿@model Accounts.Models.BasicEducation
+
+@{
+    ViewBag.Title = "Удалить запись";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Вы уверены, что хотите удалить запись об образовании?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User.Lastname)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EducationalInstitution)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EducationalInstitution)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Specialty)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Specialty)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Qualification)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Qualification)
+        </dd>
+                
+        <dt>
+            @Html.DisplayNameFor(model => model.FileName)
+        </dt>
+               
+        <dd>
+            @if (Model.Path != null)
+            {
+                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.FileName })" class="not-filled recent">@Model.FileName</a><br />
+
+                string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("Documents") - 1);
+                if (shortPath.Substring(shortPath.LastIndexOf('.')) != ".pdf" && shortPath.Substring(shortPath.LastIndexOf('.')) != ".zip")
+                {
+                    <img src="@shortPath" style="width:300px; height:auto;" />
+                }
+            }
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

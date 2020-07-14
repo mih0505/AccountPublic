@@ -1,0 +1,40 @@
+﻿@model Accounts.Models.Tutor
+
+@{
+    ViewBag.Title = "Просмотр записи";
+}
+
+<div class="row">
+    <h2>@ViewBag.Title</h2>
+</div>
+
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+        <dt>
+            ФИО преподавателя
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.Lastname) @Html.DisplayFor(model => model.User.Firstname) @Html.DisplayFor(model => model.User.Middlename)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Group.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Group.Name)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад", "Index")
+</p>

@@ -1,0 +1,729 @@
+﻿@model Accounts.Models.DetailsStudent
+
+@{
+    ViewBag.Title = $"Карточка студента";
+}
+
+<div class="intro center-content" style="margin-top:50px;">
+    <div class="intro center-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="ava" style="width:240px; height:300px;">
+                        @if (Model.User.Image == null)
+                        {
+                            if (Model.User.Sex)
+                            {<img class="img-responsive" src="~/Images/no-profile-avatar-m.png" alt="#"> }
+                            else
+                            { <img class="img-responsive" src="~/Images/no-profile-avatar-f.gif" alt="#"> }
+                        }
+                        else
+                        {
+                            @Html.Raw("<img src='/Home/DisplayingImage?id=" + Model.User.Id + "' class='img-responsive thimbnail' />")
+                        }
+                    </div>
+                    <div style="text-align:center;">
+                        <input type="file" name="uploadFile" id="uploadFile" /><br />
+                        @if (Model.User.ImageBlocked)
+                        {
+                            <a href="@Url.Action("ImageBlocked", new { id = Model.User.Id })" class="btn btn-danger btn-xs">Разблокировать</a>
+                        }
+                        else
+                        {
+                            <button id="upload" name="uploadFile" class="btn btn-success btn-xs">Изменить фото</button>
+                            <a href="@Url.Action("ImageBlocked", new { id = Model.User.Id })" class="btn btn-danger btn-xs">Заблокировать фото</a>
+                        }
+                    </div>
+                    <br />
+                    <div class="error"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="about-content">
+                        <h1 class="content-title">@Model.User.Lastname @Model.User.Firstname @Model.User.Middlename</h1>
+
+                        <p><strong>Дата рождения: </strong> @Convert.ToDateTime(Model.User.BirthDay).ToShortDateString()</p>
+                        <p><strong>Факультет: </strong> @Model.Faculty.Name</p>
+                        <p><strong>Группа: </strong> @Model.Group.Name</p>
+                        <p><strong>Курс: </strong> @Model.Group.Course</p>
+                        <p><strong>Программа: </strong> @Model.Profile.Name</p>
+                        <input type="file" name="uploadPlan" id="uploadPlan" />
+                        @if (Model.Group.PlanNameDecanat != null)
+                        {
+                            <p>
+                                @if (String.IsNullOrEmpty(Model.User.NamePlan))
+                                {
+                                    <strong>Учебный план: </strong> <a href="@Url.Action("Plan", "Home", new { id = Model.Group.idPlanDecanat })">@Model.Group.PlanNameDecanat</a>
+                                    <button id="editPlan" name="uploadPlan" class="btn btn-info btn-xs">Изменить</button>
+                                }
+                                else
+                                {
+                                    <strong>Учебный план: </strong> <a href="@Url.Action("GetFile", "Artifacts", new { path = Model.User.PathPlan, name = Model.User.NamePlan })" class="not-filled recent">@Model.User.NamePlan</a>
+                                    <button id="editPlan" name="uploadPlan" class="btn btn-info btn-xs">Изменить</button>
+                                    <a id="deletePlan" href="@Url.Action("DeletePlan", new { id = Model.User.Id })" class="btn btn-danger btn-xs">Удалить</a>
+                                }
+                            </p>
+                        }
+                    </div>
+                </div>
+                @if (User.IsInRole("Administrators") || User.IsInRole("FacultiesManagers") || User.IsInRole("Teacher"))
+                {
+                    <div class="col-md-2">
+                        <ul class="nav nav-pills nav-stacked">
+                            <li class="active"><a href="@Url.Action("DisciplinesStudent", "Journals", new { id = Model.User.Id })">Оценки</a></li>
+                            @*<li><a href="#"><i class="fa fa-exchange" aria-hidden="true"></i> История студента</a></li>
+                                <li><a href="#"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Изменить данные</a></li>
+                                <li><a href="#"><i class="fa fa-id-card-o" aria-hidden="true"></i> Справки</a></li>*@
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    @if (Model.Grades != null)
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="heading1">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse1" aria-expanded="true" aria-controls="collapse1">
+                        Зачетная книжка
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
+                <div class="panel-body">
+                    @{
+                        string discipline = "Дисциплина";
+                        string type = "Вид контроля";
+                        string hours = "Кол-во часов";
+                        string teacher = "Преподаватель";
+                        string date = "Дата";
+                        string grade = "Оценка";
+                    }
+                    <table class="table table-3">
+                        <thead>
+                            <tr>
+                                <th style="width:530px;">
+                                    @discipline
+                                </th>
+                                <th>
+                                    @type
+                                </th>
+                                <th>
+                                    @hours
+                                </th>
+                                <th>
+                                    @teacher
+                                </th>
+                                <th>
+                                    @date
+                                </th>
+                                <th>
+                                    @grade
+                                </th>
+                            </tr>
+                        </thead>
+                        <p><strong>Последний семестр</strong></p>
+
+                        @foreach (var item in Model.Grades.Where(a => a.ParentId == null).OrderBy(a => a.Date))
+                        {
+                            <tr>
+                                <td data-label="@discipline" style="width:530px;">
+                                    <a href="@Url.Action("StatementsDiscipline", "Statements", new { id = item.StatementId })">@Html.DisplayFor(modelItem => item.NameDiscipline)</a>
+                                </td>
+                                <td data-label="@type">
+                                    @Html.DisplayFor(modelItem => item.TypeControl)
+                                </td>
+                                <td data-label="@hours">
+                                    @Html.DisplayFor(modelItem => item.Hours)
+                                </td>
+
+                                <td data-label="@teacher">
+                                    @if (!String.IsNullOrEmpty(item.TeacherStatement))
+                                    {
+                                        @Html.DisplayFor(modelItem => item.TeacherStatement);
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Teacher)
+                                        if (!String.IsNullOrEmpty(item.Teacher2))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher2);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher3))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher3);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher4))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher4);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher5))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher5);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher6))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher6);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher7))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher7);
+                                        }
+                                    }
+                                </td>
+                                <td data-label="@date">
+                                    @if (@item.Date != null)
+                                    {
+                                        DateTime dateGrade = Convert.ToDateTime(@item.Date);
+                                        @Html.Raw("<span>" + dateGrade.ToString("dd/MM/yyyy") + "</span>");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                                <td data-label="@grade">
+                                    @if (@item.Grade != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Grade)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                            </tr>
+                            var subGrades = Model.Grades.Where(a => a.ParentId == item.StatementId).OrderBy(a => a.Date);
+                            if (subGrades.Count() > 0)
+                            {
+                                foreach (var subgrade in subGrades)
+                                {
+                                    <tr>
+                                        <td data-label="@discipline" style="width:530px;" colspan="3">
+                                        </td>
+
+                                        <td data-label="@teacher">
+                                            @if (!String.IsNullOrEmpty(subgrade.TeacherStatement))
+                                            {
+                                                @Html.DisplayFor(modelItem => subgrade.TeacherStatement);
+                                            }
+                                            else
+                                            {
+                                                @Html.DisplayFor(modelItem => subgrade.Teacher)
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher2))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher2);
+                                                }
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher3))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher3);
+                                                }
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher4))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher4);
+                                                }
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher5))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher5);
+                                                }
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher6))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher6);
+                                                }
+                                                if (!String.IsNullOrEmpty(subgrade.Teacher7))
+                                                {
+                                                    @Html.Raw("<br />");
+                                                    @Html.DisplayFor(modelItem => subgrade.Teacher7);
+                                                }
+                                            }
+                                        </td>
+                                        <td data-label="@date">
+                                            @if (subgrade.Date != null)
+                                            {
+                                                DateTime dateGrade = Convert.ToDateTime(subgrade.Date);
+                                                @Html.Raw("<span>" + dateGrade.ToString("dd/MM/yyyy") + "</span>");
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("&nbsp;");
+                                            }
+                                        </td>
+                                        <td data-label="@grade">
+                                            @if (subgrade.Grade != null)
+                                            {
+                                                @Html.DisplayFor(modelItem => subgrade.Grade)
+                                            }
+                                            else
+                                            {
+                                                @Html.Raw("&nbsp;");
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+
+                        }
+                    </table>
+                    <p style="text-align:right"><a href="@Url.Action("Index", "StatementStudents", new { id = Model.User.Id })">Подробнее</a></p>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-info">
+            <div class="panel-heading" role="tab" id="heading1">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse5" aria-expanded="true" aria-controls="collapse1">
+                        Зачетная книжка
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading1">
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.Arrears.Count > 0)
+    {
+        <div class="panel panel-danger">
+            <div class="panel-heading" role="tab" id="heading2">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                        Задолженности
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2">
+                <div class="panel-body">
+                    @{
+                        string discipline = "Дисциплина";
+                        string type = "Вид контроля";
+                        string teacher = "Преподаватель";
+                        string date = "Дата";
+                        string grade = "Оценка";
+                        string course = "Курс";
+                        string semester = "Семестр";
+                    }
+                    <table class="table table-3">
+                        <thead>
+                            <tr>
+                                <th style="width:530px;">
+                                    @discipline
+                                </th>
+                                <th>
+                                    @type
+                                </th>
+                                <th>
+                                    @teacher
+                                </th>
+                                <th>
+                                    @course
+                                </th>
+                                <th>
+                                    @semester
+                                </th>
+                                <th>
+                                    @date
+                                </th>
+                                <th>
+                                    @grade
+                                </th>
+                                @*<th></th>*@
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.Arrears)
+                        {
+                            <tr>
+                                <td data-label="@discipline" style="width:530px;">
+                                    <a href="@Url.Action("StatementsDiscipline", "Statements", new { id = item.ParentId })">@Html.DisplayFor(modelItem => item.NameDiscipline)</a>
+                                </td>
+                                <td data-label="@type">
+                                    @Html.DisplayFor(modelItem => item.TypeControl)
+                                </td>
+                                <td data-label="@teacher">
+                                    @if (!String.IsNullOrEmpty(item.TeacherStatement))
+                                    {
+                                        @Html.DisplayFor(modelItem => item.TeacherStatement);
+                                    }
+                                    else
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Teacher)
+                                        if (!String.IsNullOrEmpty(item.Teacher2))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher2);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher3))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher3);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher4))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher4);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher5))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher5);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher6))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher6);
+                                        }
+                                        if (!String.IsNullOrEmpty(item.Teacher7))
+                                        {
+                                            @Html.Raw("<br />");
+                                            @Html.DisplayFor(modelItem => item.Teacher7);
+                                        }
+                                    }
+                                </td>
+                                <td data-label="@course">
+                                    @Html.DisplayFor(modelItem => item.Course)
+                                </td>
+                                <td data-label="@semester">
+                                    @Html.DisplayFor(modelItem => item.Semester)
+                                </td>
+                                <td data-label="@date">
+                                    @if (@item.Date != null)
+                                    {
+                                        DateTime dateGrade = Convert.ToDateTime(@item.Date);
+                                        @Html.Raw("<span>" + dateGrade.ToString("dd/MM/yyyy") + "</span>");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                                <td data-label="@grade">
+                                    @if (@item.Grade != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Grade)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-danger">
+            <div class="panel-heading" role="tab" id="heading2">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse2" aria-expanded="true" aria-controls="collapse2">
+                        Задолженности
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading2">
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    }
+
+
+    @if (Model.CoursesWork.Count > 0)
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="heading3">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                        НИР, курсовые работы и отчеты по практике
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading3">
+                <div class="panel-body">
+                    @{
+                        string type = "Вид работы";
+                        string teacher = "Руководитель";
+                        string file = "Файл";
+                        string grade = "Оценка";
+                        string course = "Курс";
+                        string semester = "Семестр";
+                        string name = "Название";
+                    }
+                    <table class="table table-3">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @type
+                                </th>
+                                <th>
+                                    @teacher
+                                </th>
+                                <th>
+                                    @course
+                                </th>
+                                <th>
+                                    @semester
+                                </th>
+                                <th>
+                                    @name
+                                </th>
+                                <th>
+                                    @grade
+                                </th>
+
+                                <th>
+                                    @file
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model.CoursesWork)
+                        {
+                            <tr>
+                                <td data-label="@type">
+                                    @Html.DisplayFor(modelItem => item.Course.Type)
+                                </td>
+                                <td data-label="@teacher">
+                                    @if (@item.Teacher != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Teacher.LastnameFM)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                                <td data-label="@course">
+                                    @Html.DisplayFor(modelItem => item.Course.Cours)
+                                </td>
+                                <td data-label="@semester">
+                                    @Html.DisplayFor(modelItem => item.Course.Semester)
+                                </td>
+                                <td data-label="@name">
+                                    @if (@item.Name != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Name)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                                <td data-label="@grade">
+                                    @if (@item.Grade != null)
+                                    {
+                                        @Html.DisplayFor(modelItem => item.Grade)
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                                <td data-label="@file">
+                                    @if (!String.IsNullOrEmpty(item.Path))
+                                    {
+                                        <a href="@Url.Action("GetFile", "CourseWorkStudents", new { path = item.Path, name = item.NameFile })" class="not-filled recent">Скачать работу</a>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("&nbsp;");
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="panel panel-primary">
+            <div class="panel-heading" role="tab" id="heading3">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse3" aria-expanded="true" aria-controls="collapse3">
+                        НИР, курсовые работы и отчеты по практике
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+                <div class="panel-body">
+                </div>
+            </div>
+        </div>
+    }
+    <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="heading4">
+            <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" href="#collapse4" aria-expanded="true" aria-controls="collapse4">
+                    Прочее портфолио
+                </a>
+            </h4>
+        </div>
+        <div id="collapse4" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading4">
+            <div class="panel-body">
+                <table class="table">
+                    <tr>
+                        <th>Направление деятельности</th>
+                        <th style="text-align:center;">Достижения</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Наука", "GetArtifacts", "Tutors", new { sectionId = 2, userId = Model.Portfolio[0].Id }, null)
+                        </td>
+                        <td style="text-align:center;">
+                            @Model.Portfolio[0].Science.ToString()
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Социальная деятельность", "GetArtifacts", "Tutors", new { sectionId = 3, userId = Model.Portfolio[0].Id }, null)
+                        </td>
+                        <td style="text-align:center;">
+                            @Model.Portfolio[0].Social.ToString()
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Спортивные достижения", "GetArtifacts", "Tutors", new { sectionId = 4, userId = Model.Portfolio[0].Id }, null)
+                        </td>
+                        <td style="text-align:center;">
+                            @Model.Portfolio[0].Sports.ToString()
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @Html.ActionLink("Культурно-творческая деятельность", "GetArtifacts", "Tutors", new { sectionId = 5, userId = Model.Portfolio[0].Id }, null)
+                        </td>
+                        <td style="text-align:center;">
+                            @Model.Portfolio[0].Cultural.ToString()
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    @*<div class="panel panel-success">
+            <div class="panel-heading" role="tab" id="heading5">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse5" aria-expanded="true" aria-controls="collapse5">
+                        Панель с классом «panel-default»
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse5" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading5">
+                <div class="panel-body">
+                    <p><strong></strong></p>
+                    </div>
+            </div>
+        </div>
+        <div class="panel panel-warning">
+            <div class="panel-heading" role="tab" id="heading6">
+                <h4 class="panel-title">
+                    <a class="collapsed" role="button" data-toggle="collapse" href="#collapse6" aria-expanded="true" aria-controls="collapse6">
+                        Панель с классом «panel-success»
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse6" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading6">
+                <div class="panel-body">
+                    <p><strong></strong></p>
+                    </div>
+            </div>
+        </div>*@
+
+</div>
+
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $('#upload').on('click', function (e) {
+            $('#uploadFile').trigger('click');
+
+            $('#uploadFile').on('change', function (e) {
+                e.preventDefault();
+                var files = document.getElementById('uploadFile').files;
+                if (files.length > 0) {
+                    var data = new FormData;
+                    data.append("file", files[0]);
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Upload", "Manage", new { id = Model.User.Id })',
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function () {
+                            // Перед загрузкой файла удалить старые ошибки
+                            $('.error').text('').hide();
+                        },
+                        success: function (data) {
+                            if (data.Error) {
+                                $('.error').text(data.Error).show();
+                            }
+                            else {
+                                var url = '@Url.Action("DisplayingImage", "Manage", new { id = Model.User.Id })';
+                                $("img").attr('src', url + '?' + new Date().getTime());
+                            }
+                        }
+                    })
+                }
+            })
+        })
+
+        $('#editPlan').on('click', function (e) {
+            $('#uploadPlan').trigger('click');
+
+            $('#uploadPlan').on('change', function (e) {
+                e.preventDefault();
+                var files = document.getElementById('uploadPlan').files;
+                if (files.length > 0) {
+                    var data = new FormData;
+                    data.append("file", files[0]);
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("UploadPlan", new { id = Model.User.Id })',
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function () {
+                            // Перед загрузкой файла удалить старые ошибки
+                            $('.error').text('').hide();
+                        },
+                        success: function (data) {
+                            if (data.Error) {
+                                $('.error').text(data.Error).show();
+                            }
+                            else {
+                                window.location.reload();
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}
+

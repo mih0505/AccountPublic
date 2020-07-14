@@ -1,0 +1,569 @@
+﻿@model Accounts.Models.DiplomWork
+
+@{
+    ViewBag.Title = "Загрузка выпускной квалификационной работы";
+}
+
+<h2>@ViewBag.Title</h2>
+@using (Html.BeginForm("Edit", "DiplomWorks", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>
+        @Model.StudentDiplom.Lastname @Model.StudentDiplom.Firstname @if (!String.IsNullOrEmpty(Model.StudentDiplom.Middlename))
+        {
+            @Model.StudentDiplom.Middlename;
+        }
+    </h4>
+    <h4 class="text-danger">Все данные необходимо внести и загрузить до @Model.GIA.DateEnd.AddDays(-2).ToLongDateString()</h4>
+
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.StudentId)
+    @Html.HiddenFor(model => model.GIAId)
+    
+
+    <h3><a href="http://edu.strbsu.ru" target="_blank">Расписание ГИА</a></h3>
+    <h3><a href="@Model.GIA.Link" target="_blank">Ссылка на видеоконференцию</a></h3>
+    <h5><a href="~/DocTemplates/FinalQualifyingWork/Приказ.pdf">Приказ № 553 от 14.05.2020</a></h5>
+    <h5><a href="~/DocTemplates/FinalQualifyingWork/Приказ514.pdf">Приказ № 514 от 29.04.2020</a></h5> <br /><br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.Topic, htmlAttributes: new { @class = "control-label col-md-2" })
+
+        @if (!string.IsNullOrEmpty(Model.Topic) && User.IsInRole("Students"))
+        {
+        <div class="col-md-10 top1">
+            @Html.HiddenFor(model => model.Topic)
+                    @Html.DisplayFor(model => model.Topic)
+                </div>
+        }
+        else
+        {
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Topic, new { htmlAttributes = new { @class = "form-control", @rows = 4 } })
+                @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
+            </div>
+        }
+
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.TeacherId, "Научный руководитель", htmlAttributes: new { @class = "control-label col-md-2" })
+
+        @if (Model.TeacherId != null && User.IsInRole("Students"))
+        {
+        <div class="col-md-10 top1">
+            @Html.HiddenFor(model => model.TeacherId)
+            @Html.DisplayFor(model => model.TeacherDiplom.Lastname)
+            @Html.DisplayFor(model => model.TeacherDiplom.Firstname)
+            @Html.DisplayFor(model => model.TeacherDiplom.Middlename)
+        </div>
+        }
+        else
+        {
+            <div class="col-md-10">
+                @Html.DropDownList("TeacherId", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TeacherId, "", new { @class = "text-danger" })
+                <a id="LoadTeachers" href="#">Загрузить полный список руководителей</a>
+            </div>
+        }
+    </div>
+
+    @*-------------- заявление на организацию и проведение защиты ВКР с применением ЭО и ДОТ ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameConducting, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.ConductingIsBlocked && !String.IsNullOrEmpty(Model.PathConducting))
+            {
+                @Html.HiddenFor(model => model.PathConducting)
+                @Html.HiddenFor(model => model.ConductingIsBlocked)
+                @Html.HiddenFor(model => model.FileNameConducting)
+                <input type="hidden" id="fileUpload[0]" name="fileUpload[0]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.ConductingIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathConducting) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathConducting, name = Model.FileNameConducting })" class="not-filled recent">
+                    Заявление на утверждение темы
+                </a>
+            }
+            else
+            {
+
+                <a href="~/DocTemplates/FinalQualifyingWork/Заявление на ВКР.docx">Скачать заявление</a> <br />
+                <input type="file" id="fileUpload[0]" name="fileUpload[0]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[0]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- заявление на утверждение темы и назначения руководителя ВКР ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameConfirmation, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.ConfirmationIsBlocked && !String.IsNullOrEmpty(Model.PathConfirmation))
+            {
+                @Html.HiddenFor(model => model.PathConfirmation)
+                @Html.HiddenFor(model => model.ConfirmationIsBlocked)
+                @Html.HiddenFor(model => model.FileNameConfirmation)
+                <input type="hidden" id="fileUpload[1]" name="fileUpload[1]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.ConfirmationIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathConfirmation) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathConfirmation, name = Model.FileNameConfirmation })" class="not-filled recent">
+                    Заявление на утверждение темы
+                </a>
+            }
+            else
+            {
+                <a href="~/DocTemplates/FinalQualifyingWork/Заявление на утверждение темы.docx">Скачать заявление</a> <br />
+                <input type="file" id="fileUpload[1]" name="fileUpload[1]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[1]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- Заявление на изменение темы ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameDeclaration, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.DeclarationIsBlocked && !String.IsNullOrEmpty(Model.PathDeclaration))
+            {
+                @Html.HiddenFor(model => model.PathDeclaration)
+                @Html.HiddenFor(model => model.DeclarationIsBlocked)
+                @Html.HiddenFor(model => model.FileNameDeclaration)
+                <input type="hidden" id="fileUpload[2]" name="fileUpload[2]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.DeclarationIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathDeclaration) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathDeclaration, name = Model.FileNameDeclaration })" class="not-filled recent">
+                    Заявление на утверждение темы
+                </a>
+            }
+            else
+            {
+                <a href="~/DocTemplates/FinalQualifyingWork/Заявление на изменение темы.docx">Скачать заявление</a> <br />
+                <input type="file" id="fileUpload[2]" name="fileUpload[2]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[2]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- согласие автора на передачу неисключительных прав на ВКР ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameСonsent, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.СonsentIsBlocked && !String.IsNullOrEmpty(Model.PathСonsent))
+            {
+                @Html.HiddenFor(model => model.PathСonsent)
+                @Html.HiddenFor(model => model.СonsentIsBlocked)
+                @Html.HiddenFor(model => model.FileNameСonsent)
+                <input type="hidden" id="fileUpload[3]" name="fileUpload[3]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.СonsentIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathСonsent) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathСonsent, name = Model.FileNameСonsent })" class="not-filled recent">
+                    Согласие на передачу прав
+                </a>
+            }
+            else
+            {
+                <a href="~/DocTemplates/FinalQualifyingWork/Согласие.docx">Скачать согласие</a> <br />
+                <input type="file" id="fileUpload[3]" name="fileUpload[3]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[3]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- Загрузка диплома Word ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameDiplom, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.DiplomIsBlocked && !String.IsNullOrEmpty(Model.PathDiplom))
+            {
+                @Html.HiddenFor(model => model.PathDiplom)
+                @Html.HiddenFor(model => model.DiplomIsBlocked)
+                @Html.HiddenFor(model => model.FileNameDiplom)
+                <input type="hidden" id="fileUpload[4]" name="fileUpload[4]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.DiplomIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathDiplom) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathDiplom, name = Model.FileNameDiplom })" class="not-filled recent">
+                    Скачать ВКР в Word
+                </a>
+            }
+            else
+            {
+                <input type="file" id="fileUpload[4]" name="fileUpload[4]" />
+                <p>
+                    Размер файла не должен превышать 50 МБ.
+                </p>
+                <div id="fileinfo[4]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+    @*-------------- Загрузка диплома PDF ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameDiplomPDF, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.DiplomIsBlockedPDF && !String.IsNullOrEmpty(Model.PathDiplomPDF))
+            {
+                @Html.HiddenFor(model => model.PathDiplomPDF)
+                @Html.HiddenFor(model => model.DiplomIsBlockedPDF)
+                @Html.HiddenFor(model => model.FileNameDiplomPDF)
+                <input type="hidden" id="fileUpload[5]" name="fileUpload[5]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.DiplomIsBlockedPDF)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathDiplomPDF) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathDiplomPDF, name = Model.FileNameDiplomPDF })" class="not-filled recent">
+                    Скачать ВКР в PDF
+                </a>
+            }
+            else
+            {
+                <input type="file" id="fileUpload[5]" name="fileUpload[5]" />
+                <p>
+                    Размер файла не должен превышать 50 МБ.
+                </p>
+                <div id="fileinfo[5]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+    @*-------------- Загрузка отзыва ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameFeedback, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.FeedbackIsBlocked && !String.IsNullOrEmpty(Model.PathFeedback))
+            {
+                @Html.HiddenFor(model => model.PathFeedback)
+                @Html.HiddenFor(model => model.FeedbackIsBlocked)
+                @Html.HiddenFor(model => model.FileNameFeedback)
+                <input type="hidden" id="fileUpload[6]" name="fileUpload[6]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.FeedbackIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathFeedback) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathFeedback, name = nameof(Model.FileNameFeedback) })" class="not-filled recent">
+                    Скачать отзыв
+                </a>
+            }
+            else
+            {
+                <a href="~/DocTemplates/FinalQualifyingWork/Отзыв.docx">Скачать бланк отзыва</a> <br />
+                <input type="file" id="fileUpload[6]" name="fileUpload[6]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[6]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- Загрузка антиплагиата ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNamePlagiarism, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.PlagiarismIsBlocked && !String.IsNullOrEmpty(Model.PathPlagiarism))
+            {
+                @Html.HiddenFor(model => model.PathPlagiarism)
+                @Html.HiddenFor(model => model.PlagiarismIsBlocked)
+                @Html.HiddenFor(model => model.FileNamePlagiarism)
+                <input type="hidden" id="fileUpload[7]" name="fileUpload[7]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.PlagiarismIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathPlagiarism) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathPlagiarism, name = Model.FileNamePlagiarism })" class="not-filled recent">
+                    Процент заимствований
+                </a>
+            }
+            else
+            {
+                <input type="file" id="fileUpload[7]" name="fileUpload[7]" />
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+                </p>
+                <div id="fileinfo[7]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- Загрузка рецензии ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameReview, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.ReviewIsBlocked && !String.IsNullOrEmpty(Model.PathReview))
+            {
+                @Html.HiddenFor(model => model.PathReview)
+                @Html.HiddenFor(model => model.ReviewIsBlocked)
+                @Html.HiddenFor(model => model.FileNameReview)
+                <input type="hidden" id="fileUpload[8]" name="fileUpload[8]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.ReviewIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathReview) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathReview, name = Model.FileNameReview })" class="not-filled recent">
+                    Скачать рецензию
+                </a>
+            }
+            else
+            {
+                <a href="~/DocTemplates/FinalQualifyingWork/Рецензия.docx">Скачать бланк рецензии</a> <br />
+                <input type="file" id="fileUpload[8]" name="fileUpload[8]" />
+
+                <p>
+                    Размер файла не должен превышать 10 МБ.
+
+                </p>
+
+                <div id="fileinfo[8]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+
+    @*-------------- Загрузка приложения ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameApplication, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.ApplicationIsBlocked && !String.IsNullOrEmpty(Model.PathApplication))
+            {
+                @Html.HiddenFor(model => model.PathApplication)
+                @Html.HiddenFor(model => model.ApplicationIsBlocked)
+                @Html.HiddenFor(model => model.FileNameApplication)
+                <input type="hidden" id="fileUpload[9]" name="fileUpload[9]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.ApplicationIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathApplication) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathApplication, name = Model.FileNameApplication })" class="not-filled recent">
+                    Приложение
+                </a>
+            }
+            else
+            {
+                <input type="file" id="fileUpload[9]" name="fileUpload[9]" />
+                <p>
+                    Размер файла не должен превышать 50 МБ.
+                </p>
+                <div id="fileinfo[9]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+    @*-------------- Прочие документы ------------------*@
+    <div class="form-group">
+        @Html.LabelFor(model => model.FileNameOther, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @if (Model.OtherIsBlocked && !String.IsNullOrEmpty(Model.PathOther))
+            {
+                @Html.HiddenFor(model => model.PathOther)
+                @Html.HiddenFor(model => model.OtherIsBlocked)
+                @Html.HiddenFor(model => model.FileNameOther)
+                <input type="hidden" id="fileUpload[10]" name="fileUpload[10]" />
+
+                if (!User.IsInRole("Students"))
+                {
+                    //отображение значка удаления файла
+                    if (Model.OtherIsBlocked)
+                    {
+                        <a href="@Url.Action("Delete", "DiplomWorks", new { id = Model.Id, field = nameof(Model.PathOther) })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+
+                //Отображение ссылки на файл
+                <a href="@Url.Action("GetFile", new { path = Model.PathOther, name = Model.FileNameOther })" class="not-filled recent">
+                    Прочие документы
+                </a>
+            }
+            else
+            {
+                <input type="file" id="fileUpload[10]" name="fileUpload[10]" />
+                <p>
+                    Размер файла не должен превышать 50 МБ.
+                </p>
+                <div id="fileinfo[10]" style="color:red;"></div>
+            }
+        </div>
+    </div>
+
+    <br />
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <h4 class="text-danger">После сохранения, доступ к редактированию будет закрыт!!! Для удаления ошибочно загруженных файлов обратитесь в деканат своего факультета или к секретарю ГИА.</h4>
+            <p>
+                Для загрузки доступны следующие форматы файлов: *.docx, *.doc, *.pdf, *.zip, *.jpg, *.png <br />
+                Загружая файлы и нажимая на кнопку "Сохранить", Вы даёте свое согласие на обработку своих персональных данных!
+            </p>
+            <input type="submit" value="Сохранить" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @if (User.IsInRole("Students"))
+    {
+        @Html.ActionLink("Назад", "Index", "Home")
+    }
+    else
+    {
+        @Html.ActionLink("Назад", "Details", "GIAs", new { id = Model.GIA.Id }, null)
+    }
+</div>
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+<script type="text/javascript">
+        function updateSize() {
+            var file = this.files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            let ind = Number(this.id[11]);
+            let sz = (ind == 4 || ind == 5 || ind == 9 || ind == 10) ? 50 : 10;
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > sz * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ind == 4 && (ext.toLowerCase() != "doc" && ext.toLowerCase() != "docx")) {
+                messageError += "Допускаются только файлы с расширениями: docx или doc"
+            }
+            else if (ind == 5 && ext.toLowerCase() != "pdf") {
+                messageError += "Допускаются только файлы с расширением: pdf"
+            }
+            else if ((ind != 4 || ind != 5) && (ext.toLowerCase() != "doc" && ext.toLowerCase() != "docx" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip" && ext.toLowerCase() != "jpg" && ext.toLowerCase() != "png"))
+                messageError += "Допускаются только файлы с расширениями: docx, doc, pdf, zip, jpg, png"
+            document.getElementById("fileinfo[" + ind + "]").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+
+        for (let i = 0; i < 9; i++) {
+            if (document.getElementById('fileUpload[' + i + ']') != null) {
+                document.getElementById('fileUpload[' + i + ']').addEventListener('change', updateSize, false);
+            }
+        }
+
+
+        $(document).ready(function () {
+            $("#LoadTeachers").click(function () {
+                $("#TeacherId").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetTeachers")',
+                  dataType: 'json',                  
+                  success: function (teachers) {
+                      $.each(teachers, function (i, teacher) {
+                          $("#TeacherId").append('<option value="' + teacher.Value + '">' + teacher.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список групп.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+</script>
+}
+

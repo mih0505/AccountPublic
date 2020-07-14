@@ -1,0 +1,73 @@
+﻿@model Accounts.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Удалить пользователя";
+}
+
+<h2> @ViewBag.Title</h2>
+
+<h3>Вы действительно хотите удалить этого пользователя?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.UserName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Lastname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Lastname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Firstname)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Firstname)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Middlename)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Middlename)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+        <dt>
+            DecanatId
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DecanatId)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,55 @@
+﻿@using Accounts.Models
+@model List<MessageViewModel>
+
+@{
+    ViewBag.Title = "Список непрочитанных сообщений";
+}
+
+@using (Html.BeginForm("UnreadMessages", "Home", FormMethod.Post))
+{
+    <div class="modal-content">
+        <div class="modal-header">
+            <a href="@Url.Action("Close", "Messages")" class="close">X</a>
+            @*<button type="submit" class="close"><span aria-hidden="true">&times;</span></button>*@
+            <h2>@ViewBag.Title</h2>
+        </div>
+        <div class="modal-body">
+            <table class="table" cellspacing="0">
+                <tr >                    
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].Title)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model[0].Content)
+                    </th>
+                </tr>
+
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    <tr>                        
+                        <td>
+                            @Html.DisplayFor(modelItem => Model[i].Title)
+                        </td>
+                        <td>
+                            @Html.Raw(Model[i].Content)
+                            @*@Html.DisplayFor(modelItem => Model[i].Content)*@
+                        </td>
+                    </tr>
+
+                    @Html.HiddenFor(modelItem => Model[i].Date)
+                    @Html.HiddenFor(modelItem => Model[i].Title)
+                    @Html.HiddenFor(modelItem => Model[i].Content)
+                    @Html.HiddenFor(modelItem => Model[i].MessageId)
+                }
+            </table>
+        </div>
+        <div class="modal-footer">
+            <a href="@Url.Action("Index", "Messages")" class="btn btn-primary btn-xs" style="padding:5px 10px 5px 10px; font-size:14px;">Перейти к списку всех сообщений</a>
+            <a href="@Url.Action("Close", "Messages")" class="btn btn-primary btn-xs" style="padding:5px 10px 5px 10px; font-size:14px;">Закрыть</a>            
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -1,0 +1,46 @@
+﻿@model Accounts.Models.TeacherDepartment
+
+@{
+    ViewBag.Title = "Удаление связи преподавателя и кафедры";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Вы уверены, что хотите удалить связь преподавателя с кафедрой?</h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Преподаватель
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Teacher.LastnameFM)
+        </dd>
+        <dt>
+            Кафедра
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsManager)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsManager)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

@@ -1,0 +1,97 @@
+﻿@model Accounts.Models.Course
+
+@{
+    ViewBag.Title = "Описание курсовой/дипломной работы";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            Группа
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Group.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FacultyId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+
+        <dt>
+            Кафедра
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Cours)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Cours)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateBegin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateBegin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateEnd)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateEnd)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CourseWorkCreater)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User.LastnameFM)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CurrentYear)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад", "Index")
+</p>

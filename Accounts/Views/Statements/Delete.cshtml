@@ -1,0 +1,104 @@
+﻿@model Accounts.Models.Statement
+
+@{
+    ViewBag.Title = "Удаление ведомости";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<h3>Вы уверены, что хотите удалить эту ведомость?</h3>
+<p>Удаление ведомости приведет к уделению оценок в данной ведомости. <strong style="color:red;">Данная операция необратима!!!</strong></p>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Number)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NameDiscipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NameDiscipline)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeControl)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeControl)
+        </dd>
+                
+        <dt>
+            Преподаватель
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeacherDiscipline.LastnameFM)
+        </dd>
+
+        <dt>
+            Группа
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.GroupName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Semester)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Semester)
+        </dd>
+                
+        <dt>
+            @Html.DisplayNameFor(model => model.CurrentYear)
+        </dt>
+
+        <dd>
+            @Model.CurrentYear
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ZET)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ZET)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Hours)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Hours)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

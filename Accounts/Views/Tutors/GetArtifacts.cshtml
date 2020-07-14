@@ -1,0 +1,95 @@
+﻿@model IEnumerable<Accounts.Models.Artifact>
+
+@{
+    ViewBag.Title = ViewBag.Section.Alias;
+}
+
+<h2>@ViewBag.Section.Alias</h2>
+<h2>
+    @ViewBag.CurrentUser.Lastname @ViewBag.CurrentUser.Firstname @ViewBag.CurrentUser.Middlename
+</h2>
+
+@{
+    foreach (var catigory in ViewBag.Catigories)
+    {
+        string name = catigory.Name;
+        if (!User.IsInRole("Students") && name == "Статьи")
+        {
+            <h3>Публикации</h3>
+        }
+        else
+        {
+            <h3>@catigory.Name</h3>
+        }
+        <p>
+            @{
+                @Html.ActionLink("Добавить достижение", "Create", "Artifacts", new { id = @catigory.Id, userId = @ViewBag.CurrentUser.Id }, null)
+                @*<a href="@Url.Action("Create", "Artifacts", new { id = @catigory.Id })">Добавить достижение</a>*@
+            }
+        </p>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateBegin)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Location)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.AdditionalInformation)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Link)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.NameFile)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    if (catigory.Id == item.CatigoryId)
+                    {
+                        <tr>
+                            <td>
+                                <a href="@Url.Action("Details", "Artifacts", new { id = item.Id })">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </a>
+                            </td>
+                            <td>
+                                @item.DateBegin.ToString("dd/MM/yyyy")
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Location)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.AdditionalInformation)
+                            </td>
+                            <td>
+                                @if (item.Link != null)
+                                {
+                                    <a href="@item.Link" target="_blank">Ссылка</a>
+                                }
+                            </td>
+                            <td>
+                                <a href="@Url.Action("GetFile", new { path = item.Path, name = item.NameFile })" class="not-filled recent">@item.NameFile</a>
+                            </td>
+                            <td>
+                                <a href="@Url.Action("Edit", "Artifacts", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                                <a href="@Url.Action("Delete", "Artifacts", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table><br /><br /><br />
+    }
+}
+
+@*@Html.ActionLink("Назад", "StudentsGroup", new { id = @ViewBag.GroupId })*@

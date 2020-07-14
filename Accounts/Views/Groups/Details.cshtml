@@ -1,0 +1,112 @@
+﻿@model Accounts.Models.Group
+
+@{
+    ViewBag.Title = "Группа " + @Model.Name;
+}
+
+<div>
+    <h4>@ViewBag.Title</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Faculty.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Faculty.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FormOfTraining.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FormOfTraining.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PlanNameDecanat)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PlanNameDecanat)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Profile.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Profile.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DecanatID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DecanatID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MoodleID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MoodleID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Course)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Course)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.YearOfReceipt)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.YearOfReceipt)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AcademicYear)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AcademicYear)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Period)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Period)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsDeleted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsDeleted)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад", "Index")
+</p>

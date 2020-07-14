@@ -1,0 +1,117 @@
+﻿@model Accounts.Models.ReportGrades
+@{
+    ViewBag.Title = "Экспорт оценок";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @if (User.IsInRole("Administrators"))
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.FacultyId, "Факультет", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("FacultyId", null, htmlAttributes: new { @class = "form-control", @id = "faculty" })
+                    <p>Укажите факультет, для выбора группы</p>
+                </div>
+            </div>
+        }
+        else
+        { <div class="form-group">
+                @Html.LabelFor(model => model.FacultyId, "Факультет", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("FacultyId", null, htmlAttributes: new { @class = "form-control", @id = "faculty", @disabled = "disabled" })
+                    @*@Html.Hidden("FacultyId", id)*@
+                    <p>Укажите факультет, для выбора группы</p>
+                </div>
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GroupId, "Группа", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("GroupId", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Years, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Years", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Semester, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Semester", null, htmlAttributes: new { @class = "form-control" })
+
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Экспорт" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#faculty").change(function () {
+                $("#GroupId").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetGroups")',
+                  dataType: 'json',
+                  data: { id: $("#faculty").val() },
+                  success: function (groups) {
+                      $.each(groups, function (i, group) {
+                          $("#GroupId").append('<option value="' + group.Value + '">' + group.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список групп.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+
+
+        $(document).ready(function () {
+            $("#GroupId").change(function () {
+                $("#Years").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetYears")',
+                  dataType: 'json',
+                  data: { id: $("#GroupId").val() },
+                  success: function (years) {
+                      $.each(years, function (i, year) {
+                          $("#Years").append('<option value="' + year.Value + '">' + year.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список учебный годов.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+    </script>
+}

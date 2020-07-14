@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Accounts.Models.Tutor>
+
+@{
+    ViewBag.Title = "Список курируемых групп";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (User.IsInRole("Administrators") || User.IsInRole("TutorsManagers"))
+{
+    <p>
+        @Html.ActionLink("Закрепить тьютора за группой ", "Create")
+    </p>
+}
+
+<table class="table">
+    <tr>
+        <th>Группа</th>
+        <th>ФИО</th>
+        <th>Факультет</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("StudentsGroup", new { id = item.GroupId })">
+                    @Html.DisplayFor(modelItem => item.Group.Name)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Lastname)
+                @Html.DisplayFor(modelItem => item.User.Firstname)
+                @Html.DisplayFor(modelItem => item.User.Middlename)
+            </td>
+            <td>@Html.DisplayFor(modelItem => item.Faculty.Name)</td>
+            <td>
+                @if (User.IsInRole("Administrators") || User.IsInRole("TutorsManagers"))
+                {
+                    <a href="@Url.Action("Details", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-search"></span></a>
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                }
+            </td>
+        </tr>
+    }
+
+</table>

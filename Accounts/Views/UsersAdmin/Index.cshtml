@@ -1,0 +1,141 @@
+﻿@model PagedList.IPagedList<Accounts.Models.ApplicationUser>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Список пользователей";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+    @Html.ActionLink("Добавить пользователя", "Create")
+    @*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink("Синхронизировать студентов всех групп", "SyncStudentsAllGroups", "Groups")
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @Html.ActionLink("Синхронизировать преподавателей", "SyncTeachers", "UsersAdmin")*@
+</p>
+
+@using (Html.BeginForm("Index", "UsersAdmin", new { sortOrder = Request.QueryString["sortOrder"], lastname = ViewBag.LastnameFilter, email = ViewBag.EmailFilter, group = ViewBag.GroupFilter, role = ViewBag.RoleFilter }, FormMethod.Get))
+{
+<div class="form-inline" style="margin-bottom:10px">
+    <div class="form-filter-events">
+        <label class="control-label">Фамилия: </label>
+        @Html.TextBox("lastname", ViewBag.LastnameFilter as string, htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+    </div>
+
+    <div class="form-filter-events">
+        <label class="control-label">Email: </label>
+        @Html.TextBox("email", ViewBag.EmailFilter as string, htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+    </div>
+
+    <div class="form-filter-events">
+        <label class="control-label">Группа: </label>
+        @Html.TextBox("group", ViewBag.GroupFilter as string, htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+    </div>
+    <div class="form-filter-events">
+        <label class="control-label">Роль: </label>
+        @Html.DropDownList("role", ViewBag.RoleId as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:130px" })
+    </div>
+    <div class="form-filter-events">
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+        <a class="btn btn-default" href="/UsersAdmin/ClearFilter">Очистить</a>
+    </div>
+    </div>
+    }
+
+    <table class="table">
+        <tr>
+            <th style="min-width:60px;">
+                DecanatId
+            </th>
+            <th style="min-width:240px;">
+                @Html.ActionLink("ФИО", "Index", new { sortOrder = ViewBag.LastnameSortParm, lastname = ViewBag.LastnameFilter, email = ViewBag.EmailFilter, group = ViewBag.GroupFilter, role = ViewBag.RoleFilter })
+                @if (ViewBag.CurrentSort == "lastname_asc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+                else if (ViewBag.CurrentSort == "lastname_desc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+                else
+                { }
+            </th>
+            <th style="min-width:130px;">
+                @Html.ActionLink("Группа", "Index", new { sortOrder = ViewBag.GroupSortParm, lastname = ViewBag.LastnameFilter, email = ViewBag.EmailFilter, group = ViewBag.GroupFilter, role = ViewBag.RoleFilter })
+                @if (ViewBag.CurrentSort == "group_asc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+                else if (ViewBag.CurrentSort == "group_desc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+                else
+                { }
+            </th>
+            <th style="min-width:230px;">
+                @Html.ActionLink("Email", "Index", new { sortOrder = ViewBag.EmailSortParm, lastname = ViewBag.LastnameFilter, email = ViewBag.EmailFilter, group = ViewBag.GroupFilter, role = ViewBag.RoleFilter })
+                @if (ViewBag.CurrentSort == "email_asc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet"></span>}
+                else if (ViewBag.CurrentSort == "email_desc")
+                {<span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+                else
+                { }
+            </th>
+            <th style="min-width:40px;">
+                Работ-ль
+            </th>
+            <th style="min-width:140px;">
+                Последний вход
+            </th>
+
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DecanatId)
+                </td>
+                <td>
+                    <a href="@Url.Action("Details", new { id = item.Id })">
+                        @Html.DisplayFor(modelItem => item.Lastname)
+
+                        @Html.DisplayFor(modelItem => item.Firstname)
+
+                        @Html.DisplayFor(modelItem => item.Middlename)
+                    </a>
+                </td>
+                <td>
+                    <a href="@Url.Action("StudentsGroup", "Groups", new { id = item.GroupId })">
+                        @Html.DisplayFor(modelItem => item.Group.Name)
+                    </a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @if (item.Employer == true)
+                    {<text>Да</text>}
+                else
+                {<text>Нет</text>}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastLogin)
+                </td>
+                <td>
+                    @*<a href="@Url.Action("UpdateMoodlePasswordAndSend", "Moodle", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-education"></span></a>*@
+                    <a href="@Url.Action("SendNewPassword", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon glyphicon-envelope"></span></a>
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                </td>
+            </tr>
+        }
+
+    </table>
+    Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+    {
+        page,
+        sortOrder = Request.QueryString["sortOrder"],
+        lastname = ViewBag.LastnameFilter,
+        email = ViewBag.EmailFilter,
+        group = ViewBag.GroupFilter,
+        role = ViewBag.RoleFilter
+    }))

@@ -1,0 +1,104 @@
+﻿@model PagedList.IPagedList<Accounts.Models.LogLogins>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Журнал входов на сайт";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Index", "LogLogins", new { sortOrder = Request.QueryString["sortOrder"], lastname = ViewBag.LastnameFilter, login = ViewBag.LoginFilter, dateBegin = ViewBag.DateBeginFilter, dateEnd = ViewBag.DateEndFilter }, FormMethod.Get))
+{
+<div class="form-inline" style="margin-bottom:10px">
+
+    <div class="form-filter-events">
+        <label class="control-label">Фамилия: </label>
+        @Html.TextBox("lastname", "", htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+    </div>
+
+    <div class="form-filter-events">
+        <label class="control-label">Логин: </label>
+        @Html.TextBox("login", "", htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+    </div>
+
+    <div class="form-filter-events">
+        <label class="control-label">С: </label>
+        @Html.TextBox("dateBegin", null, htmlAttributes: new { @class = "form-control", @type = "date", style = "max-width:160px" })
+    </div>
+
+    <div class="form-filter-events">
+        <label class="control-label">До: </label>
+        @Html.TextBox("dateEnd", null, htmlAttributes: new { @class = "form-control", @type = "date", style = "max-width:160px" })
+    </div>
+    <div class="form-filter-events">
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+        <a class="btn btn-default" href="/LogLogins/ClearFilter">Очистить</a>
+    </div>
+</div>
+}
+
+<table class="table" style="table-layout: fixed;">
+    <tr>
+        <th>            
+            @Html.ActionLink("Пользователь", "Index", new { sortOrder = ViewBag.LastnameSortParm, login = ViewBag.LoginFilter, lastname = ViewBag.LastnameFilter, dateBegin = ViewBag.DateBeginFilter, dateEnd = ViewBag.DateEndFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Время", "Index", new { sortOrder = ViewBag.DateSortParm, login = ViewBag.LoginFilter, lastname = ViewBag.LastnameFilter, dateBegin = ViewBag.DateBeginFilter, dateEnd = ViewBag.DateEndFilter })
+        </th>
+        <th>
+            IP-адрес
+        </th>
+        <th>
+            Браузер
+        </th> 
+        <th width="300">
+            Сообщение
+        </th>
+        @*<th>
+    Реферрер
+</th>*@
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.User.Lastname)
+                @Html.DisplayFor(modelItem => item.User.Firstname)
+                @Html.DisplayFor(modelItem => item.User.Middlename)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TimesLogin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IP)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Browser)
+            </td> 
+            <td>
+                @Html.DisplayFor(modelItem => item.Message)
+            </td>
+            @*<td style="word-wrap:break-word;">
+                @Html.DisplayFor(modelItem => item.Referrer)
+            </td>*@
+            <td>
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    login = ViewBag.LoginFilter,
+    lastname = ViewBag.LastnameFilter,
+    dateBegin = ViewBag.DateBeginFilter,
+    dateEnd = ViewBag.DateEndFilter
+}))

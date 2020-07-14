@@ -1,0 +1,125 @@
+﻿@model List<Accounts.Models.DistributionViewModel>
+
+@{
+    ViewBag.Title = "Распределение студентов";
+}
+
+
+<h2>@ViewBag.Title</h2>
+<br />
+@using (Html.BeginForm("Distribution", "Courses", FormMethod.Post))
+{
+    <table class="table">
+        <tr>
+            <th>
+                <div class="col-md-10-statement">
+                    №
+                </div>
+            </th>
+            <th>
+                Фамилия, имя, <br />отчество студента
+            </th>
+            <th>
+                Преподаватель
+            </th>
+            @*<th>
+                    Дата загрузки <br />работы
+                </th>*@
+            <th>
+                Название работы
+            </th>
+            <th>
+                Оценка
+            </th>
+            <th>
+                Файл
+            </th>
+            <th></th>
+        </tr>
+
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td><div class="col-md-10-statement top1">@(i + 1)</div></td>
+                <td>
+                    <div class="col-md-10-statement top1">
+                        @Html.HiddenFor(m => m[i].CourseWorkStudent.Id)
+                        @Html.HiddenFor(m => m[i].CourseWorkStudent.StudentId)
+                        @Model[i].CourseWorkStudent.Student.Lastname
+                        @Model[i].CourseWorkStudent.Student.Firstname
+                        @Model[i].CourseWorkStudent.Student.Middlename
+                    </div>
+                </td>
+                <td>
+                    @Html.DropDownListFor(m => m[i].CourseWorkStudent.TeacherId, Model[i].Teachers, "- Выберите -", new { @class = "form-control" })
+
+                    @if (ViewBag.CountTeachers >= 2)
+                    {
+                        <br />
+                        @Html.DropDownListFor(m => m[i].CourseWorkStudent.Teacher2Id, Model[i].Teachers2, "- Выберите -", new { @class = "form-control" })
+                    }
+                    @if (ViewBag.CountTeachers >= 3)
+                    {
+                        <br />
+                        @Html.DropDownListFor(m => m[i].CourseWorkStudent.Teacher3Id, Model[i].Teachers3, "- Выберите -", new { @class = "form-control" })
+                    }
+                    @if (ViewBag.CountTeachers >= 4)
+                    {
+                        <br />
+                        @Html.DropDownListFor(m => m[i].CourseWorkStudent.Teacher4Id, Model[i].Teachers4, "- Выберите -", new { @class = "form-control" })
+                    }
+                    @if (ViewBag.CountTeachers == 5)
+                    {
+                        <br />
+                        @Html.DropDownListFor(m => m[i].CourseWorkStudent.Teacher5Id, Model[i].Teachers5, "- Выберите -", new { @class = "form-control" })
+                    }
+                </td>
+                @*<td>
+                        <div class="col-md-10-statement top1">
+                            @Html.ValueFor(m => m[i].CourseWorkStudent.DateUpload, "{0:dd/MM/yyyy}")
+                        </div>
+                    </td>*@
+                <td>
+                    <div class="col-md-10-statement top1" style="max-width:450px;">
+                        @Model[i].CourseWorkStudent.Name
+                    </div>
+                </td>
+                <td>
+                    <div class="col-md-10-statement top1">
+                        @Model[i].CourseWorkStudent.Grade
+                    </div>
+                </td>
+                <td>
+                    <div class="col-md-10-statement top1">
+                        @if (Model[i].CourseWorkStudent.NameFile != null)
+                        {
+                            <a href="@Url.Action("GetFile", "CourseWorkStudents", new { path = Model[i].CourseWorkStudent.Path, name = Model[i].CourseWorkStudent.NameFile })" class="not-filled recent">Скачать работу</a>
+                        }
+                    </div>
+                </td>
+                <td>
+                    @*  ------------------------------------------------------
+                        ------------------------------------------------------
+                        ----- раскомментировать, когда эта шайка лодырей -----
+                        -----         загрузит работы прошлых лет        -----
+                        ------------------------------------------------------
+                        ------------------------------------------------------
+                         @if (Model[i].CourseWorkStudent.TeacherId != null)
+                         {*@
+                    <a href="@Url.Action("Edit", "CourseWorkStudents", new { id = Model[i].CourseWorkStudent.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                    @*}*@
+                </td>
+            </tr>
+        }
+
+    </table>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Сохранить" class="btn btn-default" />
+        </div>
+    </div>
+
+}
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>

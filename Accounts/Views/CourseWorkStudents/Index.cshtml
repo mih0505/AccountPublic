@@ -1,0 +1,100 @@
+﻿@model IEnumerable<Accounts.Models.CourseWorkStudent>
+
+@{
+    ViewBag.Title = "Список проектов студентов";
+}
+
+<h2>@ViewBag.Title</h2>
+<br />
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Course.Type)
+        </th>
+        <th>
+            Студент
+        </th>
+        <th>
+            Преподаватель
+        </th>
+        <th>
+            Курс
+        </th>
+        <th>
+            Семестр
+        </th>
+        @*<th>
+            Дата загрузки
+        </th>*@
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Grade)
+        </th>
+
+        <th>
+            @Html.DisplayNameFor(model => model.NameFile)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course.Type)
+        </td>
+        <td>
+            <a href="@Url.Action("Details", new { id = item.Id })">
+                @Html.DisplayFor(modelItem => item.Student.LastnameFM)
+            </a>
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Teacher.LastnameFM)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course.Cours)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Course.Semester)
+        </td>
+        @*<td>
+            @Html.ValueFor(modelItem => item.DateUpload, "{0:dd/MM/yyyy}")
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Grade)
+        </td>
+        <td>
+            @if (!String.IsNullOrEmpty(item.Path))
+            {<a href="@Url.Action("GetFile", new { path = item.Path, name = item.NameFile })" class="not-filled recent">Скачать работу</a>}
+        </td>
+        <td>
+            @if (User.IsInRole("DepartmentsManagers") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+            {
+                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+            }
+            else if (User.IsInRole("Students") || (User.IsInRole("Teachers") && (!User.IsInRole("DepartmentsManagers") || !User.IsInRole("FacultiesManagers"))))
+            {
+                if (!string.IsNullOrEmpty(item.Grade))
+                {
+                    <a href="#" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil" style="color:gray"></span></a>
+                }
+                else
+                {
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                }
+            }
+
+        </td>
+    </tr>
+    }
+
+</table>
+
+<div>
+    @Html.ActionLink("Назад", "Index", "Home")
+</div>

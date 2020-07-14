@@ -1,0 +1,194 @@
+﻿@model Accounts.Models.CourseWorkStudent
+
+@{
+    ViewBag.Title = "Редактировать данные проекта";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("Edit", "CourseWorkStudents", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.CourseId)
+    @Html.HiddenFor(model => model.StudentId)
+    @Html.HiddenFor(model => model.TeacherId)
+    @Html.HiddenFor(model => model.Teacher2Id)
+    @Html.HiddenFor(model => model.Teacher3Id)
+    @Html.HiddenFor(model => model.Teacher4Id)
+    @Html.HiddenFor(model => model.Teacher5Id)
+    @Html.HiddenFor(model => model.GroupIdSite)
+    @Html.HiddenFor(model => model.GroupIdDecanate)
+    @Html.HiddenFor(model => model.IsBlocked)
+    @Html.HiddenFor(model => model.IdSudentDecanate)
+    @Html.HiddenFor(model => model.DateUpload)
+
+    <div class="form-group">
+        @Html.Label("Вид работы", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @Html.DisplayFor(model => model.Course.Type)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Студент", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @Html.DisplayFor(model => model.Student.LastnameFM)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Руководитель", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @Html.DisplayFor(model => model.Teacher.LastnameFM)
+            @Html.DisplayFor(model => model.Teacher2.LastnameFM)
+            @Html.DisplayFor(model => model.Teacher3.LastnameFM)
+            @Html.DisplayFor(model => model.Teacher4.LastnameFM)
+            @Html.DisplayFor(model => model.Teacher5.LastnameFM)
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+
+        @if (User.IsInRole("Administrators") || User.IsInRole("DepartmentsManagers")
+            || User.IsInRole("Teachers") || User.IsInRole("FacultiesManagers"))
+        {
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        }
+        else
+        {
+            if (Model.Grade != null)
+            {
+                <div class="col-md-10 top1">
+                    @Html.DisplayFor(model => model.Name)
+                </div>
+            }
+            else
+            {
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                </div>
+            }
+        }
+    </div>
+
+    @*<div class="form-group">
+            @Html.Label("Дата загрузки", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10 top1">
+                @Html.DisplayFor(model => model.DateUpload)
+            </div>
+        </div>*@
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Grade, htmlAttributes: new { @class = "control-label col-md-2" })
+        @if ((User.IsInRole("Student") && String.IsNullOrEmpty(Model.Grade)) || User.IsInRole("Administrators")
+            || User.IsInRole("DepartmentsManagers") || User.IsInRole("Teachers") || User.IsInRole("FacultiesManagers"))
+        {
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Grade, new List<SelectListItem>
+                {
+                    new SelectListItem{ Text= "Зачтено", Value = "Зачтено" },
+                    new SelectListItem{ Text= "Не зачтено", Value = "Не зачтено" },
+                    new SelectListItem{ Text= "Неудовлетворительно", Value = "Неудовлетворительно" },
+                    new SelectListItem{ Text= "Удовлетворительно", Value = "Удовлетворительно" },
+                    new SelectListItem{ Text= "Хорошо", Value = "Хорошо" },
+                    new SelectListItem{ Text= "Отлично", Value = "Отлично" }
+                }, "Отсутствует", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Grade, "", new { @class = "text-danger" })
+            </div>
+        }
+        else
+        {
+            <div class="col-md-10 top1">
+                @Html.DisplayFor(model => model.Grade)
+            </div>
+        }
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Файл проекта/отчета", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10 top1">
+            @Html.HiddenFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.NameFile, new { htmlAttributes = new { @class = "form-control", type = "file" } })
+            @Html.ValidationMessageFor(model => model.NameFile, "", new { @class = "text-danger" })
+            @if (Model.Path != null)
+            {
+                string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("CourseWorks") - 1);
+                if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".pdf" || shortPath.Substring(shortPath.LastIndexOf('.')) == ".PDF")
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                        <img src="~/Images/pdf-icon.png" style="width:25px; height:25px;" />
+                        @Model.NameFile
+                    </a>
+                }
+                else if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".zip" || shortPath.Substring(shortPath.LastIndexOf('.')) == ".ZIP")
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                        <img src="~/Images/zip-files.png" style="width:25px; height:25px;" />
+                        @Model.NameFile
+                    </a>
+                }
+                else if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".docx" || shortPath.Substring(shortPath.LastIndexOf('.')) == ".doc"
+                    || shortPath.Substring(shortPath.LastIndexOf('.')) == ".DOCX" || shortPath.Substring(shortPath.LastIndexOf('.')) == ".DOC")
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                        <img src="~/Images/docx-icon.png" style="width:25px; height:25px;" />
+                        @Model.NameFile
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">
+                        <img src="@shortPath" style="width:300px; height:auto;" />
+                    </a>
+                }
+            }
+        </div>
+        <div class="col-md-10">
+            <input type="file" id="File" name="File" />
+            <p>Размер файла не должен превышать 50 МБ. Доступны следующие форматы файлов: *.docx, *.doc, *.pdf, *.zip <br />
+            Если в загруженном файле выявлены ошибки, его нужно заменить на новую (исправленную) версию!</p>
+            <div id="fileinfo" style="color:red;"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Сохранить" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function updateSize() {
+            var file = document.getElementById("File").files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > 50 * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ext.toLowerCase() != "doc" && ext.toLowerCase() != "docx" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip")
+                messageError += "Допускаются только файлы с расширениями: docx, doc, pdf, zip"
+            document.getElementById("fileinfo").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+        document.getElementById('File').addEventListener('change', updateSize);
+    </script>
+}

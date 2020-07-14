@@ -1,0 +1,48 @@
+﻿@model Accounts.Models.Lesson
+
+@{
+    ViewBag.Title = "Удаление занятия";
+}
+
+    <h2>@ViewBag.Title</h2>
+
+<h3>Вы уверены, что хотите удалить занятие за @Html.Raw(Model.Date.ToShortDateString())? Все данные об оценках будут удалены вместе с занятием!</h3>
+<br />
+<div>
+    <h4>Данные о занятии</h4>
+    <hr />
+    <dl class="dl-horizontal">        
+        <dt>
+            Тема занятия
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Topic)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.HomeWork)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HomeWork)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Details", "Journals", new { id = @Model.JournalId }, null)
+        </div>
+    }
+</div>

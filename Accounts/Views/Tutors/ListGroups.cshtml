@@ -1,0 +1,94 @@
+﻿@model PagedList.IPagedList<Accounts.Models.Group>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Список групп";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+
+</p>
+
+@using (Html.BeginForm("ListGroups", "Tutors", new { sortOrder = Request.QueryString["sortOrder"], faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, formOfTraining = ViewBag.FormFilter }, FormMethod.Get))
+{
+    <div class="form-inline" style="margin-bottom:10px">
+
+        <div class="form-filter-events">
+            <label class="control-label">Название: </label>
+            @Html.TextBox("name", "", htmlAttributes: new { @class = "form-control", style = "max-width:120px" })
+        </div>
+        @if (!User.IsInRole("TutorsManagers"))
+        {
+            <div class="form-filter-events">
+                <label class="control-label">Фак-т: </label>
+                @Html.DropDownList("faculty", (SelectList)ViewBag.FacultyList, "Все", htmlAttributes: new { @class = "form-control", style = "max-width:80px" })
+            </div>
+        }        
+        <div class="form-filter-events">
+            <label class="control-label">Форма: </label>
+            @Html.DropDownList("formOfTraining", (SelectList)ViewBag.FormOfTraining, "Все", htmlAttributes: new { @class = "form-control", style = "max-width:145px" })
+        </div>
+
+        <input type="submit" value="Фильтр" class="btn btn-default" />
+        <a class="btn btn-default" href="/Tutors/ListGroups">Очистить</a>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Название", "ListGroups", new { sortOrder = ViewBag.NameSortParm, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, formOfTraining = ViewBag.FormFilter, academicYear = ViewBag.YearFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Факультет", "ListGroups", new { sortOrder = ViewBag.FacultySortParm, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, formOfTraining = ViewBag.FormFilter, academicYear = ViewBag.YearFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Курс", "ListGroups", new { sortOrder = ViewBag.CourseSortParm, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, formOfTraining = ViewBag.FormFilter, academicYear = ViewBag.YearFilter })
+        </th>
+        <th>
+            @Html.ActionLink("Форма обучения", "ListGroups", new { sortOrder = ViewBag.FormSortParm, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, formOfTraining = ViewBag.FormFilter, academicYear = ViewBag.YearFilter })
+        </th>
+        <th>
+            Учебный год
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("StudentsGroup", new { id = item.Id })">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Faculty.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Course)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormOfTraining.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AcademicYear)
+            </td>
+        </tr>
+    }
+
+</table>
+
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("ListGroups", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    faculty = ViewBag.FacultyFilter,
+    name = ViewBag.NameFilter,
+    formOfTraining = ViewBag.FormFilter,
+    academicYear = ViewBag.YearFilter
+}))

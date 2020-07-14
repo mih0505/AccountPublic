@@ -1,0 +1,99 @@
+﻿@model IEnumerable<Accounts.Models.MessageViewModel>
+
+@{
+    ViewBag.Title = "Список сообщений";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (User.IsInRole("Administrators"))
+{
+    <p>
+        @Html.ActionLink("Создать новое сообщение", "Create")
+    </p>
+}
+
+<div id="item" class="modal fade">
+    <div id="item-content" class="modal-dialog modal-lg"> </div>
+</div>
+
+<table class="table">
+    <tr>
+        @if (User.IsInRole("Administrators"))
+        {
+            <th>
+                @Html.DisplayNameFor(model => model.RoleName)
+            </th>
+        }
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Content)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            @if (User.IsInRole("Administrators"))
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoleName)
+                </td>
+            }
+            <td>
+                @Html.DisplayFor(modelItem => item.Date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @{
+                    var length = item.Content.Length;
+
+                }
+
+                @if (length <= 100)
+                {
+                    @Html.Raw(item.Content)
+                }
+                else
+                {
+                    @Html.Raw(item.Content.Substring(0, 100))
+                }
+            </td>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.MessageId })" class="btn btn-primary btn-xs item-select"><span class="glyphicon glyphicon-list-alt" /></a>
+
+                @if (User.IsInRole("Administrators"))
+                {
+                    <a href="@Url.Action("Edit", new { id = item.MessageId })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil" /></a>
+                    <a href="@Url.Action("Delete", new { id = item.MessageId })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash" /></a>
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $.ajaxSetup({ cache: false });
+            $(".item-select").click(function (e) {
+                e.preventDefault();
+                $.get(this.href, function (data) {
+                    $('#item-content').html(data);
+                    $('#item').modal('show');
+                });
+            });
+        })
+    </script>
+}

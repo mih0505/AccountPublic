@@ -1,0 +1,216 @@
+﻿@model Accounts.Models.IndexViewModel
+@{
+    ViewBag.Title = "Редактировать профиль";
+}
+
+
+<h2>@ViewBag.Title</h2>
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <hr />
+    @if (User.IsInRole("Students"))
+    {
+        <p>
+            Уважаемые студенты, большинство ваших персональных данных, сайт получает из электронного деканата (база студентов СФ БашГУ).
+            Если Вы заметили какие-либо неточности или опечатки в своих персональных данных или данные стали не актуальны (например, Вы сменили фамилию),
+            Вам необходимо обратиться в деканат своего факультета (если Вы студент дневной формы обучения)
+            или в заочное отделение вашего факультета (если Вы студент заочной формы обучения). После обновления данных в электронном деканате,
+            через некоторое время произойдет синхронизация информации между сайтом и деканатом, и ваши персональные данные на сайте изменятся автоматически.
+        </p>
+    }
+        <dl class="dl-horizontal">
+            @if (@Model.DecanatId != null)
+            {
+                <dt style="white-space: normal;">Ваш логин (уникальный номер в системе)</dt>
+                <dd>
+                    <div class="top">
+                        @Model.DecanatId
+                    </div>
+                </dd>
+            }
+
+            @if (!Model.ImageBlocked)
+            {
+                <dt style="white-space: normal;" class="top">
+                    Нажмите на изображение, чтобы поменять его
+                </dt>
+                <dd>
+                    <div class="col-md-4 top">
+                        <div class="ava" style="width:240px; height:300px;">
+                            @if (Model.Image == null)
+                            {
+                                if (Model.Sex)
+                                {<img class="img-responsive" src="~/Images/no-profile-avatar-m.png" alt="#"> }
+                                else
+                                { <img class="img-responsive" src="~/Images/no-profile-avatar-f.gif" alt="#"> }
+                            }
+                            else
+                            {
+                                @Html.Raw("<img src='/Home/DisplayingImage' class='img-responsive thimbnail' />");
+                            }
+                            <input type="file" name="upload" id="uploadFile" /><br />
+                            <div class="error"></div>
+                        </div>
+                    </div>
+                </dd>
+            }
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Сохранить" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }
+            <dt class="top">Пароль:</dt>
+            <dd>
+                <div class="top">
+                    [
+                    @if (Model.HasPassword)
+                    {
+                        @Html.ActionLink("Сменить пароль", "ChangePassword")
+                    }
+                    else
+                    {
+                        @Html.ActionLink("Создать", "SetPassword")
+                    }
+                    ]
+                </div>
+            </dd>
+
+            <dt class="top">Секретный вопрос:</dt>
+            <dd>
+                <div class="top">
+                    @Model.Question<br />
+                    [@Html.ActionLink("Изменить", "SecurityQuestion", "Account")]
+                </div>
+            </dd>
+
+            <dt style="white-space: normal;" class="top">Доступ к электронным курсам: </dt>
+            <dd>
+                <div class="top">
+                    [@Html.ActionLink("Обновить", "UpdateMoodlePassword", "Moodle")]
+                </div>
+            </dd>
+
+
+            @*<dt>Внешние имена входа:</dt>
+        <dd>
+            @Model.Logins.Count [
+            @Html.ActionLink("Управление", "ManageLogins") ]
+        </dd>*@
+            @*
+        Номера телефонов можно использовать в качестве второго проверочного фактора для системы двухфакторной проверки подлинности.
+
+         В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
+            можно узнать, как настроить для этого приложения ASP.NET двухфакторную проверку подлинности с использованием SMS.
+
+         Настроив двухфакторную проверку подлинности, раскомментируйте следующий блок
+            *@
+            @*
+        <dt>Номер телефона:</dt>
+        <dd>
+            @(Model.PhoneNumber ?? "None")
+            @if (Model.PhoneNumber != null)
+            {
+                <br />
+                <text>[&nbsp;&nbsp;@Html.ActionLink("Change", "AddPhoneNumber")&nbsp;&nbsp;]</text>
+                using (Html.BeginForm("RemovePhoneNumber", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <text>[<input type="submit" value="Удалить" class="btn-link" />]</text>
+                }
+            }
+            else
+            {
+                <text>[&nbsp;&nbsp;@Html.ActionLink("Add", "AddPhoneNumber")
+            }
+        </dd>
+            *@
+            @*<dt>Двухфакторная проверка подлинности:</dt>
+        <dd>
+            <p>
+                Поставщики двухфакторной проверки подлинности не настроены. В <a href="https://go.microsoft.com/fwlink/?LinkId=403804">этой статье</a>
+                можно узнать, как настроить двухфакторную проверку подлинности для этого приложения ASP.NET.
+            </p>*@
+            @*@if (Model.TwoFactor)
+        {
+            using (Html.BeginForm("DisableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <text>Включено
+                <input type="submit" value="Отключить" class="btn btn-link" />
+                </text>
+            }
+        }
+        else
+        {
+            using (Html.BeginForm("EnableTwoFactorAuthentication", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                <text>Отключено
+                <input type="submit" value="Включить" class="btn btn-link" />
+                </text>
+            }
+        }*@
+            @*</dd>*@
+        </dl>
+
+        <div>
+            @{ Html.RenderAction("ListLogins"); }
+        </div>
+
+
+</div>
+
+
+@section scripts{
+    <script type="text/javascript">
+
+        $('img').on('click', function (e) {
+            $('#uploadFile').trigger('click');
+
+            $('#uploadFile').on('change', function (e) {
+                e.preventDefault();
+                var files = document.getElementById('uploadFile').files;
+                if (files.length > 0) {
+                    var data = new FormData;
+                    data.append("file", files[0]);
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Upload", "Manage")',
+                        data: data,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: function () {
+                            // Перед загрузкой файла удалить старые ошибки
+                            $('.error').text('').hide();
+                        },
+                        success: function (data) {
+                            if (data.Error) {
+                                $('.error').text(data.Error).show();
+                            }
+                            else {
+                                $("img").attr('src', '/Manage/DisplayingImage/' + '?' + new Date().getTime());
+                            }
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+}

@@ -1,0 +1,81 @@
+﻿@model Accounts.Models.CourseWorkStudent
+
+@{
+    ViewBag.Title = "Подробнее о работе";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Course.Type)
+        </dt>
+
+        <dd class="top">
+            @Html.DisplayFor(model => model.Course.Type)
+        </dd>
+
+        <dt class="top">
+            Студент
+        </dt>
+
+        <dd class="top">
+            @Html.DisplayFor(model => model.Student.LastnameFM)
+        </dd>
+
+        <dt class="top">
+            Преподаватель
+        </dt>
+
+        <dd class="top">
+            @Html.DisplayFor(model => model.Teacher.LastnameFM)
+        </dd>
+
+        <dt class="top">
+            Дата загрузки
+        </dt>
+
+        <dd class="top">
+            @if (Model.DateUpload != null)
+            { Convert.ToDateTime(Model.DateUpload).ToString("dd/MM/yyyy"); }
+        </dd>
+
+        <dt class="top">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd class="top">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt class="top">
+            @Html.DisplayNameFor(model => model.Grade)
+        </dt>
+
+        <dd class="top">
+            @Html.DisplayFor(model => model.Grade)
+        </dd>
+
+        <dt class="top">
+            @Html.DisplayNameFor(model => model.NameFile)
+        </dt>
+
+        <dd class="top">
+            @if (Model.Path != null)
+            {
+                <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.NameFile })" class="not-filled recent">@Model.NameFile</a><br />
+            }
+        </dd>
+    </dl>
+</div>
+<p>
+    @if (User.IsInRole("Students") && Model.Grade != "")
+    {}
+    else
+    {
+        @Html.ActionLink("Редактировать", "Edit", new { id = Model.Id })
+    }
+    | @Html.ActionLink("Назад", "Index")
+</p>

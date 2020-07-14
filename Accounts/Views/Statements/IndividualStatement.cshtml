@@ -1,0 +1,124 @@
+﻿@model Accounts.Models.StatementIndividual
+
+@{
+    ViewBag.Title = "Создание индивидуальной ведомости";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Number)
+    @Html.HiddenFor(model => model.NameDiscipline)
+    @Html.HiddenFor(model => model.TypeControl)
+    @Html.HiddenFor(model => model.ParentId)
+    @Html.HiddenFor(model => model.FacultyId)
+    @Html.HiddenFor(model => model.CurrentYear)
+    @Html.HiddenFor(model => model.ProfileId)
+    @Html.HiddenFor(model => model.DepartmentId)
+    @Html.HiddenFor(model => model.GroupIdDecanate)
+    @Html.HiddenFor(model => model.GroupName)
+    @Html.HiddenFor(model => model.Course)
+    @Html.HiddenFor(model => model.Semester)
+    @Html.HiddenFor(model => model.GroupId)
+    @Html.HiddenFor(model => model.ZET)
+    @Html.HiddenFor(model => model.Hours)
+    @Html.HiddenFor(model => model.CreaterStatement)
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.TeacherDisciplineId, "Студент", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("StudentId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.TeacherDisciplineId, "Преподаватель", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("TeacherDisciplineId", null, htmlAttributes: new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.TeacherDisciplineId, "", new { @class = "text-danger" })            
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DateEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DateEnd, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1">Добавить еще преподавателей (в случае комиссии)</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline2Id, "Преподаватель 2", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline2Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline2Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline3Id, "Преподаватель 3", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline3Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline3Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline4Id, "Преподаватель 4", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline4Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline4Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline5Id, "Преподаватель 5", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline5Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline5Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline6Id, "Преподаватель 6", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline6Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline6Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        @Html.LabelFor(model => model.TeacherDiscipline7Id, "Преподаватель 7", htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div>
+                            @Html.DropDownList("TeacherDiscipline7Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.TeacherDiscipline7Id, "", new { @class = "text-danger" })
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Создать" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    <a href="@Url.Action("StatementsDiscipline", "Statements", new { Id = @ViewBag.MainStatementId })">Назад</a>
+    @*@Html.ActionLink("Назад", "StatementsDiscipline", new { Id = ViewBag.MainStatementId })*@
+</div>

@@ -1,0 +1,113 @@
+﻿@model Accounts.Models.Artifact
+
+@{
+    ViewBag.Title = "Добавить достижение";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+@using (Html.BeginForm("Create", "Artifacts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <h4>Категория:  @ViewBag.Catigory.Name</h4>
+            <div class="col-md-10">
+
+                @Html.HiddenFor(model => model.UserId, new { Value = @ViewBag.UserId });
+                @Html.HiddenFor(model => model.CatigoryId, new { Value = @ViewBag.Catigory.Id })
+                @Html.ValidationMessageFor(model => model.CatigoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateBegin, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateBegin, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateBegin, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Location, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Location, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Location, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AdditionalInformation, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.AdditionalInformation, new { htmlAttributes = new { @class = "form-control", @rows = 8 } })
+                @Html.ValidationMessageFor(model => model.AdditionalInformation, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ссылка на внешний ресурс, подтверждающий достижение", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Link, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Link, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-10">
+            <input type="file" id="NameFile" name="NameFile" />
+            <p>Размер файла не должен превышать 30 МБ. Доступны следующие форматы файлов: *.jpeg, *.jpg, *.pdf, *.zip, *.png"</p>
+            <div id="fileinfo" style="color:red;"></div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Добавить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @if (User.IsInRole("Students"))
+    {
+        Html.ActionLink("Вернуться к списку достижений", "Index", new { id = @ViewBag.Catigory.SectionId });
+    }
+    else
+    {
+        @Html.ActionLink("Вернуться к списку достижений", "GetArtifacts", "Tutors", new { sectionId = @ViewBag.Catigory.SectionId, userId = @ViewBag.UserId }, null);
+    }
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function updateSize() {
+            var file = document.getElementById("NameFile").files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > 30 * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ext.toLowerCase() != "jpg" && ext.toLowerCase() != "jpeg" && ext.toLowerCase() != "jpg" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip" && ext.toLowerCase() != "png" && ext.toLowerCase() != "gif")
+                messageError += "Допускаются только файлы с расширениями: jpeg, jpg, pdf, zip, png, gif"
+            document.getElementById("fileinfo").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+        document.getElementById('NameFile').addEventListener('change', updateSize);
+    </script>
+}

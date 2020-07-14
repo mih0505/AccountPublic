@@ -1,0 +1,43 @@
+﻿@model Accounts.Models.TeacherDepartment
+
+@{
+    ViewBag.Title = "Связь преподавателя и кафедры";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div>    
+    <hr />
+    <dl class="dl-horizontal">
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeacherId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Teacher.Lastname)
+            @Html.DisplayFor(model => model.Teacher.Firstname)
+            @Html.DisplayFor(model => model.Teacher.Middlename)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsManager)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsManager)
+        </dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Назад", "Index")
+</p>

@@ -1,0 +1,74 @@
+﻿@model Accounts.Models.SecurityQuestionViewModel
+
+@{
+    ViewBag.Title = "Настройка параметров безопасности";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Заполните следующие поля</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @*<h4>
+                Уважаемые студенты и преподаватели, для повышения безопасности сайта и расширения возможностей по восстановлению доступа к
+                личному кабинету, в случае потери пароля, заполните следующие поля:
+            </h4>*@
+
+        <div class="form-group">
+            @Html.Label("Секретный вопрос:", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Question, new { htmlAttributes = new { @class = "form-control", @rows = 2 } })
+                @Html.ValidationMessageFor(model => model.Question, "", new { @class = "text-danger" })
+                <p>
+                    Введите такой вопрос, ответ на который знаете только Вы. Также этот ответ не должен быть очевиден для Вашего ближайшего окружения в ВУЗе.
+                    Этот вопрос будет использоваться для восстановления пароля в случае его утери.
+                    <br />
+                    <strong>Например:</strong>
+                    <br />
+                    Девичья фамилия Вашей матери? <br />
+                    Кличка Вашего первого домашнего питомца?<br />
+                    Название улицы, на которой Вы жили в детстве?<br />
+                    Модель Вашего первого мобильного телефона? и т.п.
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Ответ:", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Answer, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Answer, "", new { @class = "text-danger" })
+                <p>
+                    Для того чтобы избежать подсматривания ответа на секретный вопрос, он не отображается! 
+                    <br />В случае изменения вопроса или редактирования ответа, просто введите новый ответ в это поле и он заменит предыдущий.
+                    </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Продолжить" class="btn btn-default" />
+            </div>
+
+        </div>
+        <div class="form-group">
+            <div>
+                <p>
+                    Нажимая на кнопку "Продолжить" Вы принимаете условия
+                    <a href="~/Home/Rules" target="_blank">Пользовательского соглашения</a>
+                    и даете своё согласие на обработку Вашей персональной информации.
+                </p>
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

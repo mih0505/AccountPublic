@@ -1,0 +1,257 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+/*.dl-horizontal dt {
+    margin-top: 20px;
+    white-space: normal;
+}*/
+
+.top {
+    margin-top: 20px;
+}
+
+.top1 {
+    padding-top: 7px;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.panel-block {
+    margin: 10px;
+    height: 140px;
+    border: 1px solid #337ab7;
+    text-align: center;
+    padding-top: 30px;
+}
+
+.form-filter-events {
+    float: left;
+    margin: 5px;
+}
+
+.navbar-inverse {
+    background-color: #01659F;
+    border: #01659F;
+}
+
+.navbar-brand {
+    color: white !important;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: white;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+/* Avatar */
+.ava {
+    /*text-align: center;*/
+    margin: auto auto;
+    overflow: hidden;
+}
+
+#avatar {
+    display: block;
+    margin: auto auto;
+    /*max-width: 100%;*/
+    max-height: 100%;
+}
+
+#uploadFile, #uploadPlan {
+    position: absolute;
+    top: -16rem;
+    opacity: 0;
+}
+
+.error {
+    width: 380px;
+    margin: 0;
+    line-height: 20px;
+    font-size: 14px;
+    color: red;
+    font-style: italic;
+    display: none;
+}
+
+.col-md-10-statement {
+    position: relative;
+    min-height: 1px;
+}
+
+.grades { /*убирает отступ снизу в ведомостях и курсовых*/
+    margin-bottom: 0px;
+}
+
+thead.table-3 {
+    border-bottom: none;
+}
+
+@media screen and (max-width: 600px) {
+    table .table-3 {
+        border: 0;
+    }
+
+        table.table-3 thead {
+            border: none;
+            clip: rect(0 0 0 0);
+            height: 1px;
+            margin: -1px;
+            overflow: hidden;
+            padding: 0;
+            position: absolute;
+            width: 1px;
+        }
+
+        table.table-3 tr {
+            border-bottom: 1px solid #ddd;
+            display: block;
+            margin-bottom: 30px;
+        }
+
+        table.table-3 td {
+            display: block;
+            text-align: right;
+        }
+
+            table.table-3 td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: bold;
+                min-height: 20px;
+            }
+
+            table.table-3 td:last-child {
+                border-bottom: 0;
+            }
+}
+
+.table > thead > tr > th {
+    vertical-align: middle;
+    border-top: 1px solid #ddd !important;
+    border-bottom: 0;
+}
+
+.excel-table {
+    text-align: center;
+    border: 1px solid #ddd;
+    padding: 5px;
+}
+
+
+/*  statement percent  */
+.notice {
+    display: inline-block;
+    -webkit-border-radius: 0.25em;
+    -moz-border-radius: 0.25em;
+    border-radius: 0.25em;
+    padding: 2px 6px 0;
+    font-size: 75%;
+}
+
+.notice-blue {
+    color: #ffffff;
+    background: #304ffe;
+}
+
+.notice-purple {
+    color: #ffffff;
+    background: #5b69bc;
+}
+
+.notice-yellow {
+    color: #ffffff;
+    background: #fbbc05;
+}
+
+.notice-danger {
+    color: #ffffff;
+    background: #ff1744;
+}
+.notice-green {
+    color: #ffffff;
+    background: #00bf4f
+}
+
+
+
+/* Hidden placeholder */
+
+#faculty select:invalid {
+    color: gray;
+}
+
+form select option:first-child {
+    color: gray;
+}
+
+form select:invalid option:not(:first-child) {
+    color: black;
+}
+
+
+
+
+    /*table journal*/
+.journal {
+    /*border:1px solid black;*/
+    padding: 3px;
+}
+
+
+.modal-content {
+    width: 1000px;
+    margin: auto;
+}
+
+.td_grades {
+    max-width: 75px;
+}
+
+.td_students {
+    max-width: 250px !important;
+}
+
+.lesson > tbody > tr > td,
+.lesson > tbody > tr > th,
+.lesson > tfoot > tr > td,
+.lesson > tfoot > tr > th,
+.lesson > thead > tr > td,
+.lesson > thead > tr > th {
+    padding: 4px;
+}
+
+/* journals students */
+.journal-student {
+    margin: auto;
+}
+
+.journal-student td {
+    padding: 8px;
+    /*text-align: center;*/
+    vertical-align: middle;
+    margin-bottom: 0;
+    border: 1px solid grey;
+}
+
+.journal-student-central {
+    text-align: center !important; 
+}
+

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Accounts.Models.ListTeachersDepartments>
+
+@{
+    ViewBag.Title = "Список преподавателей закрепленных за кафедрами";
+}
+
+<h2>@ViewBag.Title</h2>
+@*<p>
+    @Html.ActionLink("Получить связь из списка пользователей", "Sync")    
+</p>*@
+<p>
+    @Html.ActionLink("Добавить связь", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Преподаватель
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department)
+        </th>
+        <th>Заведующий</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.Id })">
+                    @Html.DisplayFor(modelItem => item.Lastname)
+                    @Html.DisplayFor(modelItem => item.Firstname) 
+                    @Html.DisplayFor(modelItem => item.Middlename)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IsManager)
+            </td>
+            <td>
+                <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+            </td>
+        </tr>
+    }
+
+</table>

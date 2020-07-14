@@ -1,0 +1,147 @@
+﻿@model Accounts.Models.BasicEducation
+@using Microsoft.AspNet.Identity;
+
+@{
+    ViewBag.Title = "Редактировать данные о базовом образовании";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("EditBasicEdu", "Educations", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    @Html.HiddenFor(model => model.Id)
+
+    @if ((User.IsInRole("Teachers") && User.IsInRole("DepartmentsManagers")) || User.IsInRole("Administrators"))
+    {
+        <div class="form-group">
+            @Html.LabelFor(model => model.BasicEducationUserId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("BasicEducationUserId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.BasicEducationUserId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    }
+    else
+    {
+        @Html.HiddenFor(model => model.BasicEducationUserId)
+    }
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.EducationalInstitution, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.EducationalInstitution, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.EducationalInstitution, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Specialty, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Specialty, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Specialty, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Qualification, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Qualification, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Qualification, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Файл, подтверждающий образование", htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.HiddenFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.FileName, new { htmlAttributes = new { @class = "form-control", type = "file" } })
+            @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
+            @if (Model.Path != null)
+            {
+                string shortPath = Model.Path.Substring(Model.Path.LastIndexOf("Documents") - 1);
+                if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".pdf")
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.FileName })" class="not-filled recent">
+                        <img src="~/Images/pdf-icon.png" style="width:25px; height:25px;" />
+                        @Model.FileName
+                    </a>
+                }
+                else if (shortPath.Substring(shortPath.LastIndexOf('.')) == ".zip")
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.FileName })" class="not-filled recent">
+                        <img src="~/Images/zip-files.png" style="width:25px; height:25px;" />
+                        @Model.FileName
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.Action("GetFile", new { path = Model.Path, name = Model.FileName })" class="not-filled recent">
+                        <img src="@shortPath" style="width:300px; height:auto;" />
+                    </a>
+                }
+            }
+
+        </div>
+        <div class="col-md-10">
+            <input type="file" id="File" name="File" />
+            <p>Размер файла не должен превышать 3 МБ. Доступны следующие форматы файлов: *.jpeg, *.jpg, *.pdf, *.zip, *.png"</p>
+            <div id="fileinfo" style="color:red;"></div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Сохранить" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+
+<div>
+    @if (!User.IsInRole("Teachers") || @Model.BasicEducationUserId != User.Identity.GetUserId())
+    {
+        @Html.ActionLink("Назад", "IndexAll");
+    }
+    else
+    {
+        @Html.ActionLink("Назад", "Index");
+    }
+</div>
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+
+    <script type="text/javascript">
+        function updateSize() {
+            var file = document.getElementById("File").files[0],
+                ext = "не определилось",
+                parts = file.name.split('.');
+            if (parts.length > 1) ext = parts.pop();
+            var messageError = "";
+            if (file.size > 3 * 1024 * 1024) messageError = "Превышен максимальный размер файла!<br />";
+            if (ext.toLowerCase() != "jpg" && ext.toLowerCase() != "jpeg" && ext.toLowerCase() != "jpg" && ext.toLowerCase() != "pdf"
+                && ext.toLowerCase() != "zip" && ext.toLowerCase() != "png" && ext.toLowerCase() != "gif")
+                messageError += "Допускаются только файлы с расширениями: jpeg, jpg, pdf, zip, png, gif"
+            document.getElementById("fileinfo").innerHTML = [
+                messageError
+            ].join("<br>");
+        }
+        document.getElementById('File').addEventListener('change', updateSize);
+    </script>
+}

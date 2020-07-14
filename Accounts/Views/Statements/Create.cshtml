@@ -1,0 +1,242 @@
+﻿@model Accounts.Models.Statement
+
+@{
+    ViewBag.Title = "Создание ведомости";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Number, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Number, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Number, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NameDiscipline, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NameDiscipline, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NameDiscipline, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TypeControl, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TypeControl", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TypeControl, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.FacultyId, "Факультет", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("FacultyId", null, htmlAttributes: new { @class = "form-control", @id = "faculty" })
+                <p>Укажите факультет, для выбора группы</p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GroupId, "Группа", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("GroupId", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.GroupId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.Label("Кафедра", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("DepartmentId", (SelectList)ViewBag.DepartmentId, "Все", htmlAttributes: new { @class = "form-control", @id = "department" })
+                @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                <p>
+                    Выберите кафедру, для получения списка преподавателей. Если контроль осуществляют несколько преподавателей (с разных кафедр),
+                    это поле нужно оставить пустым! В этом случае, после сохранения ведомости, необходимо распределить студентов между преподавателями, иначе данная ведомость не отобразится у преподавателей!
+                </p>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeacherDisciplineId, "Преподаватель", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("TeacherDisciplineId", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.TeacherDisciplineId, "", new { @class = "text-danger" })
+                <p>
+                    Если контроль осуществляют несколько преподавателей (каждый преподаватель оценивает свою подгруппу), это поле нужно оставить пустым!
+                    После сохранения ведомости, необходимо распределить студентов между преподавателями, иначе данная ведомость не отобразится у преподавателей!
+                </p>
+            </div>
+        </div>
+
+
+        <div class="panel-group">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse1">Добавить еще преподавателей (если несколько преподавателей оценивают всю группу)</a>
+                    </h4>
+                </div>
+                <div id="collapse1" class="panel-collapse collapse">
+                    <ul class="list-group">
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline2Id, "Преподаватель 2", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline2Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline2Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline3Id, "Преподаватель 3", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline3Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline3Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline4Id, "Преподаватель 4", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline4Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline4Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline5Id, "Преподаватель 5", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline5Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline5Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline6Id, "Преподаватель 6", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline6Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline6Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            @Html.LabelFor(model => model.TeacherDiscipline7Id, "Преподаватель 7", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div>
+                                @Html.DropDownList("TeacherDiscipline7Id", null, "--Выберите--", htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.TeacherDiscipline7Id, "", new { @class = "text-danger" })
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Course, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Course, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Course, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Semester, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Semester, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Semester, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.DateBegin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.DateBegin, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.DateBegin, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateEnd, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DateEnd, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ZET, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ZET, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ZET, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Hours, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Hours, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Hours, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Создать" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#faculty").change(function () {
+                $("#GroupId").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetGroups")',
+                  dataType: 'json',
+                  data: { id: $("#faculty").val() },
+                  success: function (groups) {
+                      $.each(groups, function (i, group) {
+                          $("#GroupId").append('<option value="' + group.Value + '">' + group.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список групп.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+
+        $(document).ready(function () {
+            $("#department").change(function () {
+                $("#TeacherDisciplineId").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetTeachers")',
+                  dataType: 'json',
+                  data: { id: $("#department").val() },
+                  success: function (teachers) {
+                      $.each(teachers, function (i, teacher) {
+                          $("#TeacherDisciplineId").append('<option value="' + teacher.Value + '">' + teacher.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список преподавателей.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+    </script>
+}

@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Accounts.Models.Statement>
+
+@if (ViewBag.MainStatementId != null)
+{
+    <br />
+    <p><a href="@Url.Action("IndividualStatement", "Statements", new { statementId = ViewBag.MainStatementId })">Создать индивидуальную ведомость</a></p>
+    <br />
+    foreach (var stat in Model)
+    {
+        Html.RenderAction("StatementGroup", new { id = stat.Id });
+
+        <br />
+        <br />
+        <br />
+    }
+}
+else
+{
+    <h2>Ошибка открытия ведомости</h2>
+}
+
+

@@ -1,0 +1,255 @@
+﻿@using Accounts.Models;
+@model ProfileStatisticViewModel
+
+@{
+    ViewBag.Title = "Успеваемость по направлениям";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm("StatisticExport", "Reports"))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.ProfileId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.ProfileId, ViewBag.ProfilesList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", @id = "faculty" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Year, ViewBag.YearsList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FormOfTrainingId, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.FormOfTrainingId, ViewBag.FormsOfTrainingList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Term, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.Term, ViewBag.TermsList as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" name="buttonAction" value="Показать" class="btn btn-primary" />
+            <input type="submit" name="buttonAction" value="Экспортировать" class="btn btn-default" />
+        </div>
+    </div>
+
+    @Html.HiddenFor(model => model.ProfileId)
+    @Html.HiddenFor(model => model.Year)
+    @Html.HiddenFor(model => model.FormOfTrainingId)
+    @Html.HiddenFor(model => model.Term)
+    @Html.HiddenFor(model => model.Date)
+
+    @if (ViewBag.StatisticList != null)
+    {
+        <table>
+            <tr>
+                <th colspan="2" class="excel-table">
+                    Количество студентов
+                </th>
+                <th colspan="5" class="excel-table">
+                    Сдали все экзамены
+                </th>
+                <th colspan="4" class="excel-table">
+                    Имеют задолженности
+                </th>
+            </tr>
+            <tr>
+                <th class="excel-table">
+                    Курс
+                </th>
+                <th class="excel-table">
+                    По списку, чел.
+                </th>
+                <th class="excel-table">
+                    Всего, чел., %
+                </th>
+                <th class="excel-table">
+                    На отл., чел., %
+                </th>
+                <th class="excel-table">
+                    На хор. и отл., чел., %
+                </th>
+                <th class="excel-table">
+                    На хор., чел., %
+                </th>
+                <th class="excel-table">
+                    Имеют удовлетв., чел., %
+                </th>
+                <th class="excel-table">
+                    Всего, чел., %
+                </th>
+                <th class="excel-table">
+                    По 1 предм., чел., %
+                </th>
+                <th class="excel-table">
+                    По 2 предм., чел., %
+                </th>
+                <th class="excel-table">
+                    По 3 и более предм., чел., %
+                </th>
+            </tr>
+
+            @foreach (ExcelStatisticViewModel item in ViewBag.StatisticList)
+            {
+                <tr>
+                    <td rowspan="2" class="excel-table">
+                        @Html.DisplayFor(modelItem => item.Course)
+                    </td>
+                    <td rowspan="2" class="excel-table">
+                        @Html.DisplayFor(modelItem => item.StudentsCount)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedCount)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnExcellent)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnVeryWell)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnGood)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnOkey)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsCount)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInOne)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInTwo)
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInMoreThree)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedCountPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnExcellentPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnVeryWellPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnGoodPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.PassedOnOkeyPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsCountPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInOnePercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInTwoPercent)%
+                    </td>
+                    <td class="excel-table">
+                        @Html.DisplayFor(modelItem => item.DebtorsInMoreThreePercent)%
+                    </td>
+                </tr>
+            }
+
+            <tr>
+                <td rowspan="2" class="excel-table">
+                    Всего
+                </td>
+                <td rowspan="2" class="excel-table">
+                    @ExcelStatisticViewModel.AllStudentsCount.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedCount.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnExcellent.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnVeryWell.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnGood.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnOkey.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsCount.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInOne.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInTwo.ToString()
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInMoreThree.ToString()
+                </td>
+            </tr>
+            <tr>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedCountPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnExcellentPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnVeryWellPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnGoodPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllPassedOnOkeyPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsCountPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInOnePercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInTwoPercent.ToString()%
+                </td>
+                <td class="excel-table">
+                    @ExcelStatisticViewModel.AllDebtorsInMoreThreePercent.ToString()%
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+}

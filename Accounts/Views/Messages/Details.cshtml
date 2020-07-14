@@ -1,0 +1,32 @@
+﻿@model Accounts.Models.MessageViewModel
+
+@{
+    ViewBag.Title = "Сообщения";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+        <h2>@ViewBag.Title</h2>
+    </div>
+    <div class="modal-body">
+
+        <h4>
+            Тема: @Html.DisplayFor(model => model.Title)
+        </h4>
+        <br />
+        @Html.Raw(Model.Content)
+
+
+        </dl>
+    </div>
+    <div class="modal-footer">
+        @if (User.IsInRole("Administrators"))
+        {
+            <a href="@Url.Action("Edit", "Messages", new { id = Model.MessageId })" class="btn btn-primary btn-xs" style="padding:5px 10px 5px 10px; font-size:14px;"><span class="glyphicon glyphicon-pencil" /> Редактировать</a>
+        }
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>

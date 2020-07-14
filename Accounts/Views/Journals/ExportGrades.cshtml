@@ -1,0 +1,88 @@
+﻿@model Accounts.Models.ReportGrades
+@{
+    ViewBag.Title = "Экспорт итоговых оценок";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="form-group">
+        <label class="control-label col-md-2">Учебный год</label>
+        <div class="col-md-10">
+            @Html.DropDownList("Years", ViewBag.Years as List<SelectListItem>, htmlAttributes: new { @class = "form-control" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Факультет</label>
+        <div class="col-md-10">
+            @if (!User.IsInRole("Administrators"))
+            {
+                @Html.DropDownList("FacultyId", null, htmlAttributes: new { @class = "form-control", @disabled = "disabled" })
+            }
+            else
+            {
+                @Html.DropDownList("FacultyId", null, htmlAttributes: new { @class = "form-control", @id = "faculty" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-md-2">Группа</label>
+        <div class="col-md-10">
+            @Html.DropDownList("GroupId", null, "--Выбрать--", htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Semester, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownList("Semester", null, htmlAttributes: new { @class = "form-control" })
+
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Экспорт" class="btn btn-default" />
+        </div>
+    </div>
+</div>
+}
+
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>
+
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#faculty").change(function () {
+                $("#GroupId").empty();
+              $.ajax({
+                  type: 'POST',
+                  url: '@Url.Action("GetGroups")',
+                  dataType: 'json',
+                  data: { id: $("#faculty").val() },
+                  success: function (groups) {
+                      $.each(groups, function (i, group) {
+                          $("#GroupId").append('<option value="' + group.Value + '">' + group.Text + '</option>');
+                      });
+                  },
+                  error: function (ex) {
+                      alert('Не удалось получить список групп.' + ex);
+                  }
+              });
+              return false;
+          })
+        });
+    </script>
+}

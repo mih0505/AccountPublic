@@ -1,0 +1,70 @@
+﻿@model IEnumerable<Accounts.Models.ReportPortfolio>
+
+
+@{
+    ViewBag.Title = "Список группы";
+}
+
+<h2>@ViewBag.Title : @ViewBag.CurrentGroup.Name</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            №
+        </th>
+        <th>
+            ФИО
+        </th>
+        <th>
+            Наука
+        </th>
+        <th>
+            Соц. деят.
+        </th>
+        <th>
+            Спорт
+        </th>
+        <th>
+            Культ.-тв. деят.
+        </th>
+        <th>  
+            Оценки
+        </th>
+    </tr>
+    @{ int i = 0; }
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        @Html.Raw(++i)
+    </td>
+    <td>
+        <a href="@Url.Action("Details", "Students", new { id = item.Id })">
+            @Html.DisplayFor(modelItem => item.Lastname)
+
+            @Html.DisplayFor(modelItem => item.Firstname)
+
+            @Html.DisplayFor(modelItem => item.Middlename)
+        </a>
+    </td>
+    <td>
+        @Html.ActionLink(item.Science.ToString(), "GetArtifacts", new { sectionId = 2, userId = item.Id })
+    </td>
+    <td>
+        @Html.ActionLink(item.Social.ToString(), "GetArtifacts", new { sectionId = 3, userId = item.Id })
+    </td>
+    <td>
+        @Html.ActionLink(item.Sports.ToString(), "GetArtifacts", new { sectionId = 4, userId = item.Id })
+    </td>
+    <td>
+        @Html.ActionLink(item.Cultural.ToString(), "GetArtifacts", new { sectionId = 5, userId = item.Id })
+    </td>
+    <td>
+        <a href="@Url.Action("DisciplinesStudent", "Journals", new { id = item.Id })">
+            Журналы
+        </a>
+    </td>
+</tr>
+    }
+
+</table>

@@ -3,3 +3,20 @@
 ################################################################################
 
 /.vs
+/Account.DAL/bin/Debug
+/Account.DAL/obj
+/Account.DAL/Properties
+/Account.RPD.BL/bin/Debug
+/Account.RPD.BL/obj
+/Account.RPD.BL/Properties
+/AccountRPD/bin/Debug
+/AccountRPD/obj
+/AccountRPD/Properties
+/Accounts/bin
+/Accounts/CourseWorks
+/Accounts/DiplomWorks
+/Accounts/DocTemplates
+/Accounts/obj
+/Accounts/Properties
+/SyncAccount/bin
+/SyncAccount/obj

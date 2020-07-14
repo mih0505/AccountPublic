@@ -1,0 +1,109 @@
+﻿@model PagedList.IPagedList<Accounts.Models.GIA>
+@using PagedList.Mvc;
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@{
+    ViewBag.Title = "Государственная итоговая аттестация";
+}
+
+<h2>@ViewBag.Title</h2>
+
+
+<p>
+    @Html.ActionLink("Добавить группу", "Create")
+</p>
+
+@using (Html.BeginForm("Index", "GIAs", new { sortOrder = Request.QueryString["sortOrder"], faculty = ViewBag.FacultyFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter }, FormMethod.Get))
+{
+    <div class="form-inline" style="margin-bottom:10px">
+        <div class="form-filter-events">
+            @Html.DropDownList("faculty", ViewBag.FacultyList as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:155px" })
+        </div>
+
+        <div class="form-filter-events">
+            @Html.TextBox("group", ViewBag.GroupFilter as string, htmlAttributes: new { @class = "form-control", placeholder = "Группа", style = "max-width:100px" })
+        </div>
+
+        <div class="form-filter-events">
+            @Html.DropDownList("academicYear", ViewBag.Years as List<SelectListItem>, htmlAttributes: new { @class = "form-control", style = "max-width:145px" })
+        </div>
+
+        <div class="form-filter-events">
+            <input type="submit" value="Фильтр" class="btn btn-default" />
+            <a class="btn btn-default" href="/GIAs/ClearFilter">Очистить</a>
+        </div>
+    </div>
+}
+
+<table class="table">
+    <tr>
+        <th style="min-width:40px;">
+            @Html.ActionLink("Факультет", "Index", new { sortOrder = ViewBag.FacultySortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "faculty_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span> }
+            else if (ViewBag.CurrentSort == "faculty_desc")
+            { <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th style="min-width:100px;">
+            @Html.ActionLink("Группа", "Index", new { sortOrder = ViewBag.GroupSortParm, type = ViewBag.TypeFilter, faculty = ViewBag.FacultyFilter, name = ViewBag.NameFilter, group = ViewBag.GroupFilter, academicYear = ViewBag.YearFilter })
+            @if (ViewBag.CurrentSort == "group_asc")
+            {<span class="glyphicon glyphicon-sort-by-alphabet"></span> }
+            else if (ViewBag.CurrentSort == "group_desc")
+            { <span class="glyphicon glyphicon-sort-by-alphabet-alt"></span>}
+            else
+            { }
+        </th>
+        <th>
+            Дата сдачи
+        </th>
+        <th>
+            Ссылка для просмотра работ
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Faculty.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Group.Name)
+            </td>
+            <td>
+                @item.DateEnd.ToString("dd/MM/yyyy")
+            </td>
+            <td>
+                <a href="@Url.Action("Details", new { id = item.Id })">https://account.strbsu.ru/GIAs/Details/@item.Id</a>
+            </td>
+            <td>
+                @if (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+                {
+
+                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>if (!string.IsNullOrEmpty(item.PathVideo))
+                    {
+                        <a href="@Url.Action("Show", new { id = item.Id })" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-facetime-video"></span></a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Delete", new { id = item.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                    }
+                }
+            </td>
+        </tr>
+    }
+
+</table>
+
+Страница @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) из @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new
+{
+    page,
+    sortOrder = Request.QueryString["sortOrder"],
+    faculty = ViewBag.FacultyFilter,
+    group = ViewBag.GroupFilter,
+}))

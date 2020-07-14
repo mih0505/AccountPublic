@@ -1,0 +1,203 @@
+﻿@model Accounts.Models.GradesAndCompetences
+
+@{
+    ViewBag.Title = "Электронная зачетная книжка";
+}
+<br />
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#panel1">Электронная зачетная книжка</a></li>
+    <li><a data-toggle="tab" href="#panel2">Освоение образовательной программы</a></li>
+</ul>
+<div class="tab-content">
+    <div id="panel1" class="tab-pane fade in active">
+        @*<h2>Электронная зачетная книжка</h2>*@
+        <br />
+
+
+        @foreach (var sem in ViewBag.CountSemesters)
+        {
+            if (sem == 1 || sem == 2)
+            {
+                <h3>1 курс @sem семестр</h3>
+            }
+            else if (sem == 3 || sem == 4)
+            {
+                <h3>2 курс @sem семестр</h3>
+            }
+            else if (sem == 5 || sem == 6)
+            {
+                <h3>3 курс @sem семестр</h3>
+            }
+            else if (sem == 7 || sem == 8)
+            {
+                <h3>4 курс @sem семестр</h3>
+            }
+            else if (sem == 9 || sem == 10)
+            {
+                <h3>5 курс @sem семестр</h3>
+            }
+            <table class="table">
+                <tr>
+                    <th style="width:530px;">
+                        Дисциплина
+                    </th>
+                    <th>
+                        Вид контроля
+                    </th>
+                    <th>
+                        Кол-во часов
+                    </th>
+                    <th>
+                        Преподаватель
+                    </th>
+                    <th>
+                        Курс
+                    </th>
+                    <th>
+                        Семестр
+                    </th>
+                    <th>
+                        Дата
+                    </th>
+                    <th>
+                        Оценка
+                    </th>
+                    <th></th>
+                </tr>
+
+                @for (var i = 0; i < Model.Grades.Count; i++)
+                {
+                    if (sem == Model.Grades[i].Semester)
+                    {
+            <tr>
+                <td style="width:530px;">
+                    @if (!User.IsInRole("Students"))
+                    {
+                        <a href="@Url.Action("StatementsDiscipline", "Statements", new { id = Model.Grades[i].StatementId })">@Html.DisplayFor(modelItem => Model.Grades[i].NameDiscipline)</a>
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => Model.Grades[i].NameDiscipline)
+                    }
+                    @if (!String.IsNullOrEmpty(Model.Grades[i].Grade) && Model.Grades[i].Grade != "Не явился" && Model.Grades[i].Grade != "Неудовлетворительно" && Model.Grades[i].Grade != "Не зачтено")
+                    {<br /> <span style="color:darkslategrey;font-style: italic;">(@Html.DisplayFor(modelItem => Model.Grades[i].Competences))</span>}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Grades[i].TypeControl)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Grades[i].Hours)
+                </td>
+                <td>
+                    @if (!String.IsNullOrEmpty(Model.Grades[i].TeacherStatement))
+                    {
+                        @Html.DisplayFor(modelItem => Model.Grades[i].TeacherStatement);
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(modelItem => Model.Grades[i].Teacher)
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher2))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher2);
+                        }
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher3))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher3);
+                        }
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher4))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher4);
+                        }
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher5))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher5);
+                        }
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher6))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher6);
+                        }
+                        if (!String.IsNullOrEmpty(Model.Grades[i].Teacher7))
+                        {
+                            @Html.Raw("<br />");
+                            @Html.DisplayFor(modelItem => Model.Grades[i].Teacher7);
+                        }
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Grades[i].Course)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Grades[i].Semester)
+                </td>
+                <td>
+                    @if (Model.Grades[i].Date != null)
+                    {
+                        DateTime date = Convert.ToDateTime(Model.Grades[i].Date);
+                        @Html.Raw("<span>" + date.ToString("dd/MM/yyyy") + "</span>");
+                    }
+
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => Model.Grades[i].Grade)
+                </td>
+            </tr>
+                    }
+                }
+
+            </table>
+        }
+    </div>
+
+
+    <div id="panel2" class="tab-pane fade">
+        @*<h2>Освоение основной образовательной программы</h2>*@
+        <br />
+        <table class="table">
+            <tr class="bg-primary">
+                <th>
+                    Шифр
+                </th>
+                <th>
+                    Описание / Дисциплина
+                </th>
+                <th>
+                    Освоение / Оценка
+                </th>
+            </tr>
+            @foreach (var comp in Model.Codes)
+            {
+                <tr class="success">
+                    <td>
+                        <p>@comp.Code</p>
+                    </td>
+                    <td>
+                        <p>@comp.Name</p>
+                    </td>
+                    <td>
+                        <p>@comp.Result</p>
+                    </td>
+                </tr>
+
+                for (var i = 0; i < Model.Competences.Count; i++)
+                {
+                    if (@comp.Code == Model.Competences[i].CodeCompetence)
+                    {
+                        <tr>
+                            <td colspan="2">
+                                <p>@Model.Competences[i].Discipline</p>
+                            </td>
+                            <td>
+                                <p>@Model.Competences[i].Grade</p>
+                            </td>
+                        </tr>
+                    }
+                }
+            }
+        </table>
+    </div>
+</div>

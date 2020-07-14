@@ -1,0 +1,364 @@
+﻿@model Accounts.Models.StatementFull
+
+@{
+    ViewBag.Title = "Ведомость группы";
+}
+    <h3 style="text-align:center;">
+        @if (@Model.Statement.TypeControl == "Зачет" || @Model.Statement.TypeControl == "Зачет с оценкой")
+        {
+            if (@Model.Statement.ParentId != null)
+            {
+                @Html.Raw("Индивидуальная зачетная ведомость № " + @Model.Statement.Number)
+                <a href="@Url.Action("StatementIndividualPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+            else
+            {
+                @Html.Raw("Зачетная ведомость № " + @Model.Statement.Number)
+                <a href="@Url.Action("TestStatementGroupPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+        }
+        else if (@Model.Statement.TypeControl == "Экзамен")
+        {
+            if (@Model.Statement.ParentId != null)
+            {
+                @Html.Raw("Индивидуальная экзаменационная ведомость № " + @Model.Statement.Number)
+                <a href="@Url.Action("StatementIndividualPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+            else
+            {
+                @Html.Raw("Экзаменационная ведомость № " + @Model.Statement.Number)
+                <a href="@Url.Action("ExamStatementGroupPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+        }
+        else if (@Model.Statement.TypeControl == "Курс. раб.")
+        {
+            if (@Model.Statement.ParentId != null)
+            {
+                @Html.Raw("Индивидуальная ведомость по курсовой работе № " + @Model.Statement.Number)
+                <a href="@Url.Action("StatementIndividualPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+            else
+            {
+                @Html.Raw("Ведомость по курсовой работе № " + @Model.Statement.Number)
+                <a href="@Url.Action("TestStatementGroupPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+
+        }
+        else if (@Model.Statement.TypeControl == "Контр. раб.")
+        {
+            if (@Model.Statement.ParentId != null)
+            {
+                @Html.Raw("Индивидуальная ведомость по контрольной работе № " + @Model.Statement.Number)
+                <a href="@Url.Action("StatementIndividualPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+            else
+            {
+                @Html.Raw("Ведомость по контрольной работе № " + @Model.Statement.Number)
+                <a href="@Url.Action("TestStatementGroupPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+        }
+        else
+        {
+            if (@Model.Statement.ParentId != null)
+            {
+                @Html.Raw("Индивидуальная ведомость по практике № " + @Model.Statement.Number)
+                <a href="@Url.Action("StatementIndividualPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+            else
+            {
+                @Html.Raw("Ведомость по практике № " + @Model.Statement.Number)
+                <a href="@Url.Action("TestStatementGroupPrint", new { id = @Model.Statement.Id })" class="btn btn-success btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-print"></span></a>
+            }
+        }
+
+        @if (User.IsInRole("FacultiesManagers") || User.IsInRole("Administrators"))
+        {
+            if (@Model.Statement.ParentId == null)
+            {
+                <a href="@Url.Action("Edit", new { id = @Model.Statement.Id })" class="btn btn-primary btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-pencil"></span></a>
+            }
+            <a href="@Url.Action("Delete", new { id = @Model.Statement.Id })" class="btn btn-danger btn-xs" style="margin-bottom: 5px;"><span class="glyphicon glyphicon-trash"></span></a>
+
+        }
+
+
+    </h3>
+<hr />
+<p><strong>Дисциплина:</strong> @Model.Statement.NameDiscipline</p>
+<p><strong>Программа:</strong> @Model.Statement.Profile.Name</p>
+@if (Model.Statement.TeacherDisciplineId != null)
+{
+    if (Model.Statement.TeacherDiscipline2Id == null && Model.Statement.TeacherDiscipline3Id == null && Model.Statement.TeacherDiscipline4Id == null && Model.Statement.TeacherDiscipline5Id == null)
+    {
+        <p>
+            <strong>Преподаватель:</strong> @Model.Statement.TeacherDiscipline.Lastname @Model.Statement.TeacherDiscipline.Firstname @Model.Statement.TeacherDiscipline.Middlename
+        </p>
+    }
+    else
+    {
+        string teachers = Model.Statement.TeacherDiscipline.LastnameFM;
+
+        if (Model.Statement.TeacherDiscipline2Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline2.LastnameFM;
+        }
+        if (Model.Statement.TeacherDiscipline3Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline3.LastnameFM;
+        }
+        if (Model.Statement.TeacherDiscipline4Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline4.LastnameFM;
+        }
+        if (Model.Statement.TeacherDiscipline5Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline5.LastnameFM;
+        }
+        if (Model.Statement.TeacherDiscipline6Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline6.LastnameFM;
+        }
+        if (Model.Statement.TeacherDiscipline7Id != null)
+        {
+            teachers += ", " + Model.Statement.TeacherDiscipline7.LastnameFM;
+        }
+        <p>
+            <strong>Преподаватели: </strong> @teachers
+        </p>
+    }
+}
+<p>
+    <strong>Группа:</strong> @Model.Statement.GroupName &nbsp; &nbsp; &nbsp;
+    <strong>Курс:</strong> @Model.Statement.Course &nbsp;&nbsp;&nbsp;<strong>Семестр:</strong> @Model.Statement.Semester&nbsp;&nbsp;&nbsp;<strong>Учебный год:</strong> @Model.Statement.CurrentYear
+</p>
+<p><strong>Количество часов:</strong> @Model.Statement.ZET / @Model.Statement.Hours</p>
+
+
+<br />
+@using (Html.BeginForm("StatementGroup", "Statements", FormMethod.Post))
+{
+    @Html.HiddenFor(m => m.Statement.Id)
+    <table class="table">
+        <tr>
+            <th>
+                <div class="col-md-10-statement">
+                    №
+                </div>
+            </th>
+            <th>
+                <div class="col-md-10-statement" style="min-width:320px;">
+                    Фамилия, имя, отчество студента
+                </div>
+            </th>
+            <th>
+                <div class="col-md-10-statement">
+                    Номер <br />зачетной книжки
+                </div>
+            </th>
+            @if (@Model.Statement.TypeControl == "Экзамен")
+            {
+                <th>
+                    <div class="col-md-10-statement">
+                        Баллы за семестр<br />(0 - 80)
+                    </div>
+                </th>
+                <th>
+                    <div class="col-md-10-statement">
+                        Доп. баллы
+                    </div>
+                </th>
+                <th>
+                    <div class="col-md-10-statement">
+                        Баллы за экзамен<br />(0 - 30)
+                    </div>
+                </th>
+            }
+            else if (@Model.Statement.TypeControl == "Зачет" || @Model.Statement.TypeControl == "Зачет с оценкой")
+            {
+                <th>
+                    <div class="col-md-10-statement">
+                        Итого баллов<br />(0 - 100)
+                    </div>
+                </th>
+            }
+            <th>
+                <div class="col-md-10-statement" style="min-width:130px;">
+                    Дата
+                </div>
+            </th>
+            <th>
+                <div class="col-md-10-statement" style="min-width:130px;">
+                    Оценка
+                </div>
+            </th>
+            @if ((Model.Statement.TeacherDisciplineId == null && DateTime.Now.Date <= Model.Statement.DateEnd)
+                || (Model.Statement.TeacherDisciplineId == null && DateTime.Now.Date > Model.Statement.DateEnd))
+            {
+                <th>
+                    <div class="col-md-10-statement">
+                        Преподаватель
+                    </div>
+                </th>
+            }
+            @if (DateTime.Now.Date > Model.Statement.DateEnd)
+            {
+                <th>
+                    <div class="col-md-10-statement">
+                        Инд.
+                    </div>
+                </th>
+            }
+            @if (User.IsInRole("Administrators"))
+            {
+                <th></th>
+            }
+        </tr>
+
+
+        @for (int i = 0; i < Model.StatementDistribution.Count; i++)
+        {
+            <tr>
+                <td><div class="col-md-10-statement top1">@(i + 1)</div></td>
+                <td>
+                    <div class="col-md-10-statement top1">
+                        @Html.HiddenFor(m => m.StatementDistribution[i].StatementStudent.Id)
+                        @Html.HiddenFor(m => m.StatementDistribution[i].StatementStudent.StudentStatementId)
+                        @Model.StatementDistribution[i].StatementStudent.StudentStatement.Lastname
+                        @Model.StatementDistribution[i].StatementStudent.StudentStatement.Firstname
+                        @Model.StatementDistribution[i].StatementStudent.StudentStatement.Middlename
+                    </div>
+                </td>
+                <td>
+                    <div class="col-md-10-statement top1">
+                        @Model.StatementDistribution[i].StatementStudent.StudentStatement.NumberOfRecordBook
+                    </div>
+                </td>
+                @if (@Model.Statement.TypeControl == "Экзамен")
+                {
+                    if (DateTime.Now.Date <= Model.Statement.DateEnd)
+                    {
+                        <td>
+                            @Html.EditorFor(m => m.StatementDistribution[i].StatementStudent.PointSemester, new { htmlAttributes = new { @class = "form-control" } })
+                        </td>
+                        <td>
+                            @Html.EditorFor(m => m.StatementDistribution[i].StatementStudent.PointAdvanced, new { htmlAttributes = new { @class = "form-control" } })
+                        </td>
+                        <td>
+                            @Html.EditorFor(m => m.StatementDistribution[i].StatementStudent.PointControl, new { htmlAttributes = new { @class = "form-control" } })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.PointSemester, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.PointAdvanced, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.PointControl, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                    }
+                }
+                else if (@Model.Statement.TypeControl == "Зачет" || @Model.Statement.TypeControl == "Зачет с оценкой")
+                {
+                    if (DateTime.Now.Date <= Model.Statement.DateEnd)
+                    {
+                        <td>
+                            @Html.EditorFor(m => m.StatementDistribution[i].StatementStudent.TotalPoint, new { htmlAttributes = new { @class = "form-control", @style = "width: 90px;" } })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.TotalPoint, new { htmlAttributes = new { @class = "form-control", @style = "width: 90px;" } })
+                            </div>
+                        </td>
+                    }
+                }
+                <td>
+                    <div class="form-group grades">
+                        @if ((User.IsInRole("Administrators") || User.IsInRole("Teachers") || User.IsInRole("FacultiesManagers")) && DateTime.Now.Date <= Model.Statement.DateEnd)
+                        {
+                            <div class="col-md-10-statement">
+                                @Html.EditorFor(m => m.StatementDistribution[i].StatementStudent.Date, new { htmlAttributes = new { @Value = Model.StatementDistribution[i].StatementStudent.Date?.ToString("yyyy-MM-dd"), @class = "form-control" } })
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.Date)
+                            </div>
+                        }
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group grades">
+                        @if ((User.IsInRole("Administrators") || User.IsInRole("Teachers") || User.IsInRole("FacultiesManagers")) && DateTime.Now.Date <= Model.Statement.DateEnd)
+                        {
+                            <div class="col-md-10-statement">
+                                @Html.DropDownListFor(m => m.StatementDistribution[i].StatementStudent.Grade, Model.StatementDistribution[i].Grades, "--Отсутствует--", new { @class = "form-control", @style = "width: 180px;" })
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-md-10-statement top1">
+                                @Html.DisplayFor(m => m.StatementDistribution[i].StatementStudent.Grade)
+                            </div>
+                        }
+                    </div>
+                </td>
+                @if (Model.Statement.TeacherDisciplineId == null && DateTime.Now.Date <= Model.Statement.DateEnd)
+                {
+                    <td>
+                        <div class="col-md-10-statement">
+                            @Html.DropDownListFor(m => m.StatementDistribution[i].StatementStudent.TeacherStatementId,
+                           Model.StatementDistribution[i].Teachers, "--Отсутствует--", new { @class = "form-control", @style = "width: 180px;" })
+                        </div>
+                    </td>
+                }
+
+                @if (Model.Statement.TeacherDisciplineId == null && DateTime.Now.Date > Model.Statement.DateEnd)
+                {
+                    <td>
+                        <div class="col-md-10-statement">
+                            @Html.DropDownListFor(m => m.StatementDistribution[i].StatementStudent.TeacherStatementId,
+                           Model.StatementDistribution[i].Teachers, "--Отсутствует--", new { @class = "form-control", @style = "width: 180px;", @disabled = "disabled" })
+                        </div>
+                    </td>
+                }
+                @if (DateTime.Now.Date > Model.Statement.DateEnd && Model.Statement.ParentId == null)
+                {
+                    <td>
+                        <a href="@Url.Action("IndividualStatement", "Statements", new { statementId = @Model.Statement.Id, studentId = @Model.StatementDistribution[i].StatementStudent.StudentStatementId })" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-plus"></span></a>
+                    </td>
+                }
+                @*@if (User.IsInRole("Administrators"))
+                    {
+                        <td>
+                            <a href="@Url.Action("Delete", "StatementStudents", new { id = @Model.StatementDistribution[i].StatementStudent.Id })" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-trash"></span></a>
+                        </td>
+                    }*@
+            </tr>
+        }
+
+    </table>
+    if (DateTime.Now.Date <= Model.Statement.DateEnd)
+    {
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Сохранить" class="btn btn-default" />
+            </div>
+        </div>
+    }
+}
+<div>
+    @Html.ActionLink("Назад", "Index")
+</div>

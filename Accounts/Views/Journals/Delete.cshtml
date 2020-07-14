@@ -1,0 +1,38 @@
+﻿@model Accounts.Models.Journal
+
+@{
+    ViewBag.Title = "Удаление";
+}
+
+    <h2>@ViewBag.Title</h2>
+
+    <h3>Вы действительно хотите удалить журнал группы: @Model.GroupName за учебный год: @Model.Year? <br /><span style="color:red;">После удаления, все данные об оценках будут утеряны!</span></h3>
+<div>    
+    <hr />
+    <dl class="dl-horizontal">        
+        <dt>
+            Преподаватель
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeacherName.Lastname)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Discipline)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Discipline)
+        </dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Удалить" class="btn btn-default" /> |
+            @Html.ActionLink("Назад", "Index")
+        </div>
+    }
+</div>

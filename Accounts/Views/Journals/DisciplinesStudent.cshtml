@@ -1,0 +1,59 @@
+﻿@model IEnumerable<Accounts.Models.Journal>
+@{
+    ViewBag.Title = "Список дисциплин";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@if (Model != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    №
+                </th>
+                <th>
+                    Дисциплина
+                </th>
+                <th style="text-align:center;">
+                    Семестр
+                </th>
+                <th>
+                    Преподаватель
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 0; }
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(++i)</td>
+                    <td>
+                        @if (User.IsInRole("Students"))
+                        {
+                            <a href="@Url.Action("DisciplineGrades", new { id = item.Id })">
+                                @Html.DisplayFor(modelItem => item.Discipline)
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("DisciplineGrades", new { id = item.Id, studentId = ViewBag.UserId })">
+                                @Html.DisplayFor(modelItem => item.Discipline)
+                            </a>
+                        }
+                    </td>
+                    <td style="text-align:center;">@Html.DisplayFor(modelItem => item.Semester)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TeacherName.LastnameFM)
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h3>Данные об оценках отсутствуют</h3>
+}

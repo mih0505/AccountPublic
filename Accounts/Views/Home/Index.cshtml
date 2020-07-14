@@ -1,0 +1,499 @@
+﻿@{
+    ViewBag.Title = "Домашняя страницы";
+}
+
+@if (ViewBag.CountMessages > 0)
+{
+    <div id="unread-message" class="modal fade">
+        <div id="unread-message-content" class="modal-dialog modal-lg"> </div>
+    </div>
+}
+
+<div class="intro center-content" style="margin-top:50px;">
+    <div class="intro center-content">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="ava" style="width:240px; height:300px;">
+                        @if (@ViewBag.User.Image == null)
+                        {
+                            if (@ViewBag.User.Sex)
+                            {<img class="img-responsive" src="~/Images/no-profile-avatar-m.png" alt="#"> }
+                            else
+                            { <img class="img-responsive" src="~/Images/no-profile-avatar-f.gif" alt="#"> }
+                        }
+                        else
+                        {
+                            @Html.Raw("<img src='/Home/DisplayingImage' class='img-responsive thimbnail' />");
+                        }
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="about-content">
+                        <h1 class="content-title">@ViewBag.User.Lastname @ViewBag.User.Firstname @ViewBag.User.Middlename</h1>
+                        @if (User.IsInRole("Students"))
+                        {
+                            <p><strong>Дата рождения: </strong> @Convert.ToDateTime(ViewBag.User.BirthDay).ToShortDateString()</p>
+                            <p><strong>Факультет: </strong> @ViewBag.Faculty.Name</p>
+                            <p><strong>Группа: </strong> @ViewBag.Group.Name</p>
+                            <p><strong>Курс: </strong> @ViewBag.Group.Course</p>
+                            <p><strong>Программа: </strong> @ViewBag.Profile.Name</p>
+                            @*if (@ViewBag.Group.YearOfReceipt == null)
+                                {
+                                    int year = DateTime.Now.Year - (@ViewBag.Group.Course - 1);
+                                    <p><strong>Год поступления: </strong> @year</p>
+                                }
+                                else
+                                {
+                                    <p><strong>Год поступления: </strong> @ViewBag.Group.YearOfReceipt</p>
+                                }*@
+
+                            if (ViewBag.Group.PlanNameDecanat != null)
+                            {
+                                <p>
+                                    @if (!String.IsNullOrEmpty(ViewBag.User.NamePlan))
+
+                                    {
+                                        <strong>Учебный план: </strong> <a href="@Url.Action("GetFile", "Artifacts", new { path = ViewBag.User.PathPlan, name = ViewBag.User.NamePlan })" class="not-filled recent">@ViewBag.User.NamePlan</a>
+                                    }
+                                    else
+                                    {
+                                        <strong>Учебный план: </strong> <a href="@Url.Action("Plan", "Home", new { id = ViewBag.Group.idPlanDecanat })">@ViewBag.Group.PlanNameDecanat</a>
+                                    }
+                                </p>
+                            }
+                        }
+                        @if (User.IsInRole("Teachers"))
+                        {
+                            <p><strong>Факультет: </strong> @ViewBag.Faculty.Name</p>
+
+                            if (ViewBag.Department != null)
+                            {
+                                <p><strong>Кафедра: </strong> @ViewBag.Department.Name</p>
+                            }
+                            if (ViewBag.User.Power != "" && ViewBag.User.Power != "Нет")
+                            {<p><strong>Степень: </strong> @ViewBag.User.Power</p>}
+                        if (ViewBag.User.Rank != "" && ViewBag.User.Rank != "Нет")
+                        {<p><strong>Звание: </strong> @ViewBag.User.Rank</p>}
+                }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (User.IsInRole("Administrators"))
+{
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 panel-block">
+                    @{ string teach = ViewBag.User.Lastname + ViewBag.User.Firstname.Substring(0, 1) + ViewBag.User.Middlename.Substring(0, 1); }
+                    <a class="bootcards-summary-item" href="http://edu.strbsu.ru/index.php?teacher=@(teach)">
+                        <i class="fa fa-3x mb-4 fa-calendar teal-text"></i>
+                        <h4>Расписание</h4>
+                    </a>
+                </div>
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleHome" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>Электронные курсы</h4>
+                    </a>
+                </div>
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleMessages" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-send indigo-text"></i>
+                        <h4>Обмен сообщениями</h4>
+                    </a>
+                </div>
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/GIAs/Index">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>ГИА</h4>
+                    </a>
+                </div>
+                @{
+                    if (true)
+                    {
+                        <div class="col-md-2 panel-block" style="border-color:grey;">
+                            <i class="fa fa-3x mb-4 fa-check-square indigo-text"></i>
+                            <h4 style="color:grey;">Анкета</h4>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2 panel-block">
+                            <a class="bootcards-summary-item" href="~/Home/Questionary">
+                                <i class="fa fa-3x mb-4 fa-folder-open indigo-text"></i>
+                                <h4>Анкета</h4>
+                            </a>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("PersonnelDepartment"))
+{
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Educations/IndexAllBasicEdu">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>Базовое образование</h4>
+                    </a>
+                </div>
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Educations/IndexAllAcademicDegree">
+                        <i class="fa fa-3x mb-4 fa-wpexplorer indigo-text"></i>
+                        <h4>Ученая степень/звание</h4>
+                    </a>
+                </div>
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Educations/IndexAllAdditionalEducation">
+                        <i class="fa fa-3x mb-4 fa-line-chart indigo-text"></i>
+                        <h4>Дополнительное профессиональное образование</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("SecretariesGIA") || User.IsInRole("FacultiesManagers"))
+{
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/GIAs/Index">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>ГИА</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (User.IsInRole("Teachers"))
+{
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                @*<h2>Преподавателям</h2>*@
+
+                <div class="col-md-2 panel-block">
+                    @{ string teach = ViewBag.User.Lastname + ViewBag.User.Firstname.Substring(0, 1) + ViewBag.User.Middlename.Substring(0, 1); }
+                    <a class="bootcards-summary-item" href="http://edu.strbsu.ru/index.php?teacher=@(teach)">
+                        <i class="fa fa-3x mb-4 fa-calendar teal-text"></i>
+                        <h4>Расписание</h4>
+                    </a>
+                </div>
+
+                @*<div class="col-md-2 panel-block">
+                        <a class="bootcards-summary-item" href="~/Disciplines/Index">
+                            <i class="fa fa-3x mb-4 fa-list-alt deep-purple-text"></i>
+                            <h4>Мои дисциплины</h4>
+                        </a>
+                    </div>*@
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Journals/Index">
+                        <i class="fa fa-3x mb-4 fa-list-alt deep-purple-text"></i>
+                        <h4>Мои журналы</h4>
+                    </a>
+                </div>
+
+                @{
+                    if (ViewBag.CountGroupsTutors == 0)
+                    {
+                        <div class="col-md-2 panel-block" style="border-color:grey;">
+                            <i class="fa fa-3x mb-4 fa-users indigo-text" style="color:grey;"></i>
+                            <h4 style="color:grey;">Кураторство</h4>
+                        </div>
+                    }
+                    else
+                    {
+
+                        <div class="col-md-2 panel-block">
+                            <a class="bootcards-summary-item" href="~/Tutors/Index">
+                                <i class="fa fa-3x mb-4 fa-users indigo-text"></i>
+                                <h4>Кураторство</h4>
+                            </a>
+                        </div>
+                    }
+                }
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleHome" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>Электронные курсы</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Home/Libraries">
+                        <i class="fa fa-3x mb-4 fa-address-card-o blue-text"></i>
+                        <h4>Электронные библиотеки</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                @{
+                    if (ViewBag.CountStatements == 0)
+                    {
+                        <div class="col-md-2 panel-block" style="border-color:grey;">
+                            <i class="fa fa-3x mb-4 fa-check-square-o indigo-text" style="color:grey;"></i>
+                            <h4 style="color:grey;">Ведомости</h4>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2 panel-block">
+                            <a class="bootcards-summary-item" href="~/Statements/Index">
+                                <i class="fa fa-3x mb-4 fa-check-square-o indigo-text"></i>
+                                <h4>Ведомости</h4>
+                            </a>
+                        </div>
+                    }
+                }
+
+                @{
+                    if (ViewBag.CountProjects == 0)
+                    {
+                        <div class="col-md-2 panel-block" style="border-color:grey;">
+                            <i class="fa fa-3x mb-4 fa-folder-open indigo-text" style="color:grey;"></i>
+                            <h4 style="color:grey;">Руководство проектами и практикой</h4>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-2 panel-block">
+                            <a class="bootcards-summary-item" href="~/CourseWorkStudents/Index">
+                                <i class="fa fa-3x mb-4 fa-folder-open indigo-text"></i>
+                                <h4>Руководство проектами и практикой</h4>
+                            </a>
+                        </div>
+                    }
+                }
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Educations/Index">
+                        <i class="fa fa-3x mb-4 fa-address-card-o  blue-text"></i>
+                        <h4>Данные об образовании</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+
+                    <a class="bootcards-summary-item" href="~/Artifacts/Index/2">
+                        <i class="fa fa-3x mb-4 fa-briefcase indigo-text"></i>
+                        <h4>Портфолио</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleMessages" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-send indigo-text"></i>
+                        <h4>Обмен сообщениями</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="row">
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-md-2 panel-block">
+                        <a class="bootcards-summary-item" href="~/Home/Questionary">
+                            <i class="fa fa-3x mb-4 fa-folder-open indigo-text"></i>
+                            <h4>Анкета</h4>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+}
+
+@if (User.IsInRole("Students"))
+{
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                <h2>Учебная деятельность</h2>
+
+                <div class="col-md-2 panel-block">
+                    @{
+                        string group = ViewBag.Group.Name.Replace(" ", "");
+                        if (group.Substring(0, 2) == "CS") { group = group.Substring(3); }
+                    }
+                    <a class="bootcards-summary-item" href="http://edu.strbsu.ru/index.php?group_name=@(group)">
+                        <i class="fa fa-3x mb-4 fa-calendar teal-text"></i>
+                        <h4>Расписание</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/StatementStudents/Index">
+                        <i class="fa fa-3x mb-4 fa-line-chart deep-purple-text"></i>
+                        <h4>Зачетная книжка</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleHome" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-graduation-cap indigo-text"></i>
+                        <h4>Электронные курсы</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Home/Libraries">
+                        <i class="fa fa-3x mb-4 fa-address-card-o blue-text"></i>
+                        <h4>Электронные библиотеки</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="http://strbsu.ru/sveden/education">
+                        <i class="fa fa-3x mb-4 fa-book blue-text"></i>
+                        <h4>РПД, учебный график</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Moodle/MoodleMessages" target="_blank">
+                        <i class="fa fa-3x mb-4 fa-send indigo-text"></i>
+                        <h4>Обмен сообщениями</h4>
+                    </a>
+                </div>
+
+
+                @if (@ViewBag.Group.Name.IndexOf("Z") == -1 )
+                {
+                    <div class="col-md-2 panel-block">
+                        <a class="bootcards-summary-item" href="~/Home/Questionary">
+                            <i class="fa fa-3x mb-4 fa-folder-open indigo-text"></i>
+                            <h4>Анкета</h4>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-md-2 panel-block" style="border-color:grey;">
+                        <i class="fa fa-3x mb-4 fa-check-square indigo-text"></i>
+                        <h4 style="color:grey;">Анкета</h4>
+                    </div>
+                }
+
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Declarations/Declaration">
+                        <i class="fa fa-3x mb-4 fa-exclamation deep-purple-text"></i>
+                        <h4>Заявление на онлайн-форму</h4>
+                    </a>
+                </div>
+                @{ string groupName = ViewBag.Group.Name; }
+                @if (groupName.StartsWith("К-"))
+                {
+                    <div class="col-md-2 panel-block">
+                        <a class="bootcards-summary-item" href="~/Journals/DisciplinesStudent">
+                            <i class="fa fa-3x mb-4 fa-check-square-o"></i>
+                            <h4>Мои оценки</h4>
+                        </a>
+                    </div>
+                }
+
+                @if (@ViewBag.GIA != null)
+                {
+                    <div class="col-md-2 panel-block">
+                        <a class="bootcards-summary-item" href="@Url.Action("Index", "DiplomWorks", new { id = @ViewBag.User.Id})">
+                            <i class="fa fa-3x mb-4 fa-check-circle-o deep-purple-text"></i>
+                            <h4>ГИА</h4>
+                        </a>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="panel-body">
+            <div class="row">
+                <h2>Портфолио</h2>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/StatementStudents/Rating">
+                        <i class="fa fa-3x mb-4 fa-book blue-text"></i>
+                        <h4>Учебная деятельность</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+
+                    <a class="bootcards-summary-item" href="~/Artifacts/Index/2">
+                        <i class="fa fa-3x mb-4 fa-flask blue-text"></i>
+                        <h4>Научно-исследовательская деятельность</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Artifacts/Index/3">
+                        <i class="fa fa-3x mb-4 fa-users"></i>
+                        <h4>Общественная деятельность</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Artifacts/Index/4">
+                        <i class="fa fa-3x mb-4 fa-trophy indigo-text"></i>
+                        <h4>Спортивная деятельность</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/Artifacts/Index/5">
+                        <i class="fa fa-3x mb-4 fa-music blue-text"></i>
+                        <h4>Культурно-творческая деятельность</h4>
+                    </a>
+                </div>
+
+                <div class="col-md-2 panel-block">
+                    <a class="bootcards-summary-item" href="~/CourseWorkStudents/Index">
+                        <i class="fa fa-3x mb-4 fa-briefcase indigo-text"></i>
+                        <h4>Мои проекты и практики</h4>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@section scripts
+    {
+    <script type="text/javascript">
+        $(function () {
+            $.ajaxSetup({ cache: false });
+            $(document).ready(function () {
+                $.get("/Home/UnreadMessages", function (data) {
+                    $('#unread-message-content').html(data);
+                    $('#unread-message').modal('show');
+                });
+            });
+        });
+    </script>
+}
